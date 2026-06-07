@@ -1,0 +1,19 @@
+# API keys and credentials — NEVER commit these
+claude api key.txt
+Google Cloud/
+*.key
+*.pem
+.env
+.env.local
+.env.production
+
+# Node
+node_modules/
+.npm
+
+# Vercel
+.vercel
+
+# OS
+.DS_Store
+Thumbs.db

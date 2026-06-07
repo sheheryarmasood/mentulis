@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mentulis — Mental Wellness</title>
+  <meta name="description" content="Your compassionate AI mental wellness companion.">
+  <meta name="theme-color" content="#6C63FF">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <style>
+    :root {
+      --purple:#6C63FF; --purple-dark:#5A52D5; --purple-light:#EEF0FF;
+      --green:#4CAF82; --green-light:#E8F5F0; --red:#FF6B6B;
+      --orange:#FF9F43; --text:#1A1A2E; --text-secondary:#6B7280;
+      --border:#E5E7EB; --bg:#F8F7FF; --card:#FFFFFF;
+      --shadow:0 2px 12px rgba(108,99,255,0.10);
+      --shadow-lg:0 8px 32px rgba(108,99,255,0.15);
+      --radius:16px; --radius-sm:10px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+    #root{min-height:100vh;display:flex;justify-content:center;align-items:flex-start}
+    @media(min-width:768px){
+      #root{align-items:stretch}
+      #desktop-sidebar{display:flex;flex-direction:column;width:280px;min-height:100vh;background:var(--card);border-right:1px solid var(--border);padding:32px 24px;position:sticky;top:0;height:100vh;overflow-y:auto}
+      #app-shell{flex:1;max-width:560px;min-height:100vh;display:flex;flex-direction:column}
+    }
+    @media(max-width:767px){
+      #desktop-sidebar{display:none!important}
+      #app-shell{width:100%;max-width:100%;min-height:100vh;display:flex;flex-direction:column}
+    }
+    .screen{display:none;flex-direction:column;min-height:100vh}
+    .screen.active{display:flex}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+    .topbar-title{font-size:18px;font-weight:700;color:var(--text)}
+    .topbar-back{background:none;border:none;cursor:pointer;color:var(--purple);font-size:22px;padding:4px;line-height:1}
+    .bottom-nav{display:flex;background:var(--card);border-top:1px solid var(--border);position:sticky;bottom:0;z-index:10}
+    @media(min-width:768px){.bottom-nav{display:none}}
+    .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;background:none;border:none;cursor:pointer;color:var(--text-secondary);font-size:11px;transition:color .2s}
+    .nav-btn.active{color:var(--purple)}
+    .nav-btn svg{width:22px;height:22px}
+    .card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:12px;border:none;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;width:100%}
+    .btn-primary{background:var(--purple);color:#fff}
+    .btn-primary:hover{background:var(--purple-dark);transform:translateY(-1px)}
+    .btn-secondary{background:var(--purple-light);color:var(--purple)}
+    .btn-google{background:#fff;color:#3C4043;border:1.5px solid var(--border);font-weight:500}
+    .btn-google:hover{background:#f8f8f8;box-shadow:var(--shadow)}
+    .btn-danger{background:#FFF0F0;color:var(--red)}
+    .btn-sm{padding:8px 16px;font-size:13px;border-radius:8px;width:auto}
+    .input-group{margin-bottom:16px}
+    .input-label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+    .input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;background:#fff;color:var(--text);transition:border-color .2s;outline:none}
+    .input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(108,99,255,.1)}
+    .input::placeholder{color:#9CA3AF}
+    .divider{display:flex;align-items:center;gap:12px;color:var(--text-secondary);font-size:13px;margin:16px 0}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+    .error-msg{color:var(--red);font-size:13px;margin-top:8px;display:none}
+    .error-msg.show{display:block}
+    #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1A1A2E;color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;z-index:1000;opacity:0;transition:opacity .3s;max-width:320px;text-align:center;pointer-events:none}
+    #toast.show{opacity:1}
+    .spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    /* SPLASH */
+    #screen-splash{background:linear-gradient(160deg,#6C63FF 0%,#A78BFA 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:100vh;text-align:center;padding:40px}
+    .splash-logo{width:80px;height:80px;background:rgba(255,255,255,.2);border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:24px}
+    .splash-title{font-size:36px;font-weight:800;color:#fff;margin-bottom:8px}
+    .splash-sub{font-size:16px;color:rgba(255,255,255,.8);margin-bottom:48px}
+    .splash-actions{width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px}
+    /* AUTH */
+    .auth-header{background:linear-gradient(135deg,#6C63FF,#A78BFA);padding:48px 32px 32px;text-align:center;position:relative}
+    .auth-header h1{font-size:28px;font-weight:800;color:#fff;margin-bottom:6px}
+    .auth-header p{color:rgba(255,255,255,.8);font-size:15px}
+    .auth-body{padding:32px 24px;flex:1}
+    .auth-footer{padding:0 24px 32px;text-align:center;font-size:14px;color:var(--text-secondary)}
+    .auth-footer a{color:var(--purple);text-decoration:none;font-weight:600}
+    /* HOME */
+    .home-content{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+    .greeting{font-size:22px;font-weight:700;color:var(--text)}
+    .greeting span{color:var(--purple)}
+    .greeting-sub{font-size:14px;color:var(--text-secondary);margin-top:4px}
+    .mood-row{display:flex;gap:8px;justify-content:space-between}
+    .mood-btn{flex:1;background:var(--bg);border:2px solid transparent;border-radius:12px;padding:12px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:var(--text-secondary);transition:all .2s}
+    .mood-btn:hover,.mood-btn.selected{border-color:var(--purple);background:var(--purple-light);color:var(--purple)}
+    .mood-btn span:first-child{font-size:24px}
+    .quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .quick-card{background:var(--card);border-radius:var(--radius-sm);padding:16px;cursor:pointer;transition:all .2s;border:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+    .quick-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+    .quick-icon{font-size:28px}
+    .quick-title{font-size:14px;font-weight:600;color:var(--text)}
+    .quick-sub{font-size:12px;color:var(--text-secondary)}
+    .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .stat-card{background:var(--card);border-radius:var(--radius-sm);padding:14px 10px;text-align:center;border:1px solid var(--border)}
+    .stat-num{font-size:22px;font-weight:800;color:var(--purple)}
+    .stat-label{font-size:11px;color:var(--text-secondary);margin-top:2px}
+    /* CHAT */
+    #screen-chat{background:var(--bg)}
+    .chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+    .msg{max-width:82%;display:flex;flex-direction:column;gap:4px;animation:fadeUp .3s ease}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+    .msg.user{align-self:flex-end}
+    .msg.ai{align-self:flex-start}
+    .msg-bubble{padding:12px 16px;border-radius:18px;font-size:15px;line-height:1.5}
+    .msg.user .msg-bubble{background:var(--purple);color:#fff;border-bottom-right-radius:4px}
+    .msg.ai .msg-bubble{background:var(--card);color:var(--text);border-bottom-left-radius:4px;box-shadow:var(--shadow)}
+    .msg-time{font-size:11px;color:var(--text-secondary);padding:0 4px}
+    .msg.user .msg-time{text-align:right}
+    .typing-dots{display:flex;gap:4px;padding:12px 16px}
+    .typing-dots span{width:8px;height:8px;background:var(--text-secondary);border-radius:50%;animation:bounce .9s infinite}
+    .typing-dots span:nth-child(2){animation-delay:.15s}
+    .typing-dots span:nth-child(3){animation-delay:.3s}
+    @keyframes bounce{0%,80%,100%{transform:scale(.8);opacity:.5}40%{transform:scale(1.1);opacity:1}}
+    .chat-input-area{padding:12px 16px;background:var(--card);border-top:1px solid var(--border);display:flex;gap:8px;align-items:flex-end}
+    .chat-textarea{flex:1;border:1.5px solid var(--border);border-radius:20px;padding:10px 16px;font-size:15px;resize:none;outline:none;max-height:120px;font-family:inherit;line-height:1.4;transition:border-color .2s}
+    .chat-textarea:focus{border-color:var(--purple)}
+    .icon-btn{width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+    .send-btn{background:var(--purple);color:#fff}
+    .send-btn:hover{background:var(--purple-dark)}
+    .send-btn:disabled{opacity:.5;cursor:not-allowed}
+    .voice-btn{background:var(--purple-light);color:var(--purple)}
+    .voice-btn.recording{background:var(--red);color:#fff;animation:pulse 1s infinite}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,107,.4)}50%{box-shadow:0 0 0 8px rgba(255,107,107,0)}}
+    .limit-banner{background:linear-gradient(135deg,var(--purple),#A78BFA);color:#fff;padding:16px 20px;margin:12px 16px;border-radius:14px;text-align:center;display:none}
+    .limit-banner.show{display:block}
+    .limit-banner p{font-size:14px;opacity:.9;margin-bottom:10px}
+    .limit-banner .btn{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4)}
+    .chat-starters{padding:12px 16px;display:flex;flex-wrap:wrap;gap:8px}
+    .starter-chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:8px 14px;font-size:13px;cursor:pointer;color:var(--text);transition:all .2s}
+    .starter-chip:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-light)}
+    .chat-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center}
+    .chat-empty-icon{font-size:64px;margin-bottom:16px}
+    .chat-empty-title{font-size:20px;font-weight:700;margin-bottom:8px}
+    .chat-empty-sub{font-size:14px;color:var(--text-secondary)}
+    /* TOOLS */
+    .tools-content{flex:1;overflow-y:auto;padding:20px}
+    .tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+    .tool-card{background:var(--card);border-radius:var(--radius);padding:20px;cursor:pointer;transition:all .2s;border:1px solid var(--border);text-align:center}
+    .tool-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+    .tool-icon{font-size:36px;margin-bottom:8px}
+    .tool-name{font-size:13px;font-weight:600;color:var(--text)}
+    .tool-desc{font-size:11px;color:var(--text-secondary);margin-top:4px}
+    /* MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:flex-end;justify-content:center}
+    .modal-overlay.show{display:flex}
+    @media(min-width:768px){.modal-overlay{align-items:center}}
+    .modal{background:var(--card);border-radius:24px 24px 0 0;padding:24px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;animation:slideUp .3s ease;position:relative}
+    @media(min-width:768px){.modal{border-radius:24px;max-height:80vh}}
+    @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+    .modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px}
+    @media(min-width:768px){.modal-handle{display:none}}
+    .modal-title{font-size:20px;font-weight:700;margin-bottom:16px}
+    .modal-close{position:absolute;top:16px;right:16px;background:var(--bg);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
+    /* MOOD HISTORY */
+    .mood-history-content{flex:1;overflow-y:auto;padding:20px}
+    .mood-log-item{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:10px;border:1px solid var(--border)}
+    .mood-log-emoji{font-size:28px}
+    .mood-log-info{flex:1}
+    .mood-log-date{font-size:13px;color:var(--text-secondary)}
+    .mood-log-label{font-size:15px;font-weight:600}
+    /* PROFILE */
+    .profile-content{flex:1;overflow-y:auto;padding:20px}
+    .profile-avatar{width:80px;height:80px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;font-weight:700;margin:0 auto 12px}
+    .profile-name{font-size:20px;font-weight:700;text-align:center}
+    .profile-email{font-size:14px;color:var(--text-secondary);text-align:center;margin-bottom:24px}
+    .settings-section{margin-bottom:24px}
+    .settings-label{font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;padding:0 4px}
+    .settings-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--card);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:6px;cursor:pointer}
+    .settings-item-left{display:flex;align-items:center;gap:12px}
+    .settings-icon{font-size:20px}
+    .settings-item-title{font-size:15px;font-weight:500}
+    .settings-item-sub{font-size:12px;color:var(--text-secondary)}
+    .settings-chevron{color:var(--text-secondary);font-size:18px}
+    .premium-banner{background:linear-gradient(135deg,#FFD700,#FF9F43);border-radius:var(--radius);padding:20px;margin-bottom:20px;color:#fff}
+    .premium-banner h3{font-size:18px;font-weight:700;margin-bottom:4px}
+    .premium-banner p{font-size:13px;opacity:.9;margin-bottom:14px}
+    .premium-banner .btn{background:rgba(255,255,255,.25);color:#fff}
+    .lang-select{padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;background:#fff;cursor:pointer;outline:none}
+    .crisis-info{background:#FFF0F0;border:1.5px solid var(--red);border-radius:12px;padding:14px 16px;font-size:13px;color:#C0392B}
+    /* DESKTOP SIDEBAR */
+    #desktop-sidebar{display:none}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px}
+    .sidebar-logo-icon{width:40px;height:40px;background:var(--purple);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px}
+    .sidebar-logo-text{font-size:20px;font-weight:800;color:var(--text)}
+    .sidebar-nav{flex:1;display:flex;flex-direction:column;gap:4px}
+    .sidebar-nav-btn{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:none;border:none;cursor:pointer;color:var(--text-secondary);font-size:15px;font-weight:500;transition:all .2s;text-align:left;width:100%}
+    .sidebar-nav-btn:hover{background:var(--purple-light);color:var(--purple)}
+    .sidebar-nav-btn.active{background:var(--purple-light);color:var(--purple);font-weight:600}
+    .sidebar-nav-btn svg{width:20px;height:20px;flex-shrink:0}
+    .sidebar-user{border-top:1px solid var(--border);padding-top:16px;margin-top:16px}
+    .sidebar-user-info{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .sidebar-avatar{width:40px;height:40px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;flex-shrink:0}
+    .sidebar-name{font-size:14px;font-weight:600}
+    .sidebar-plan{font-size:12px;color:var(--text-secondary)}
+    /* ASSESSMENT */
+    .assessment-q{margin-bottom:20px}
+    .assessment-q p{font-size:15px;font-weight:500;margin-bottom:12px}
+    .assessment-options{display:flex;flex-direction:column;gap:8px}
+    .assessment-opt{padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-size:14px;transition:all .2s;background:#fff;text-align:left}
+    .assessment-opt:hover{border-color:var(--purple);background:var(--purple-light)}
+    .assessment-opt.selected{border-color:var(--purple);background:var(--purple-light);color:var(--purple);font-weight:600}
+    /* BREATH */
+    .breath-circle{width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,var(--purple),var(--purple-dark));margin:24px auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:600;text-align:center;transition:transform 4s ease-in-out}
+    .breath-circle.inhale{transform:scale(1.4)}
+    .breath-circle.exhale{transform:scale(1)}
+  </style>
+</head>
+<body>
+<div id="root">
+
+  <!-- DESKTOP SIDEBAR -->
+  <div id="desktop-sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">🧠</div>
+      <div class="sidebar-logo-text">Mentulis</div>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="sidebar-nav-btn active" onclick="gotoScreen('home')" id="snav-home">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Home
+      </button>
+      <button class="sidebar-nav-btn" onclick="gotoScreen('chat')" id="snav-chat">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+        Chat with Mentulis
+      </button>
+      <button class="sidebar-nav-btn" onclick="gotoScreen('tools')" id="snav-tools">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+        Wellness Tools
+      </button>
+      <button class="sidebar-nav-btn" onclick="gotoScreen('mood')" id="snav-mood">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        Mood Tracker
+      </button>
+      <button class="sidebar-nav-btn" onclick="gotoScreen('profile')" id="snav-profile">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        Profile
+      </button>
+    </nav>
+    <div class="sidebar-user" id="sidebar-user-section" style="display:none">
+      <div class="sidebar-user-info">
+        <div class="sidebar-avatar" id="sidebar-avatar">?</div>
+        <div>
+          <div class="sidebar-name" id="sidebar-name">—</div>
+          <div class="sidebar-plan" id="sidebar-plan">Free plan</div>
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="handleSignOut()">Sign out</button>
+    </div>
+  </div>
+
+  <!-- APP SHELL -->
+  <div id="app-shell">
+
+    <!-- SPLASH -->
+    <div id="screen-splash" class="screen active">
+      <div class="splash-logo">🧠</div>
+      <h1 class="splash-title">Mentulis</h1>
+      <p class="splash-sub">Your compassionate mental wellness companion for South Asian, Arabic and French-speaking communities</p>
+      <div class="splash-actions">
+        <button class="btn" style="background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4)" onclick="showScreen('login')">Sign In</button>
+        <button class="btn" style="background:#fff;color:var(--purple)" onclick="showScreen('signup')">Get Started — Free</button>
+      </div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="screen-login" class="screen" style="background:var(--card)">
+      <div class="auth-header">
+        <button class="topbar-back" onclick="showScreen('splash')" style="position:absolute;top:16px;left:16px;color:rgba(255,255,255,.8)">←</button>
+        <h1>Welcome back</h1>
+        <p>Continue your wellness journey</p>
+      </div>
+      <div class="auth-body">
+        <button class="btn btn-google" onclick="signInWithGoogle()">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+          Continue with Google
+        </button>
+        <div class="divider">or</div>
+        <div class="input-group">
+          <label class="input-label">Email</label>
+          <input type="email" class="input" id="login-email" placeholder="you@email.com" autocomplete="email">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Password</label>
+          <input type="password" class="input" id="login-password" placeholder="Your password" autocomplete="current-password">
+        </div>
+        <div class="error-msg" id="login-error"></div>
+        <button class="btn btn-primary" id="login-btn" onclick="signInWithEmail()">Sign In</button>
+      </div>
+      <div class="auth-footer">Don't have an account? <a href="#" onclick="showScreen('signup')">Sign up free</a></div>
+    </div>
+
+    <!-- SIGNUP -->
+    <div id="screen-signup" class="screen" style="background:var(--card)">
+      <div class="auth-header">
+        <button class="topbar-back" onclick="showScreen('splash')" style="position:absolute;top:16px;left:16px;color:rgba(255,255,255,.8)">←</button>
+        <h1>Create account</h1>
+        <p>Join thousands on their wellness journey</p>
+      </div>
+      <div class="auth-body">
+        <button class="btn btn-google" onclick="signInWithGoogle()">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+          Sign up with Google
+        </button>
+        <div class="divider">or</div>
+        <div class="input-group">
+          <label class="input-label">Your name</label>
+          <input type="text" class="input" id="signup-name" placeholder="First name" autocomplete="given-name">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Email</label>
+          <input type="email" class="input" id="signup-email" placeholder="you@email.com" autocomplete="email">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Password</label>
+          <input type="password" class="input" id="signup-password" placeholder="At least 8 characters" autocomplete="new-password">
+        </div>
+        <div class="error-msg" id="signup-error"></div>
+        <button class="btn btn-primary" id="signup-btn" onclick="signUpWithEmail()">Create Account</button>
+        <p style="font-size:12px;color:var(--text-secondary);text-align:center;margin-top:12px">PIPEDA compliant. Your data is secure. 🇨🇦</p>
+      </div>
+      <div class="auth-footer">Already have an account? <a href="#" onclick="showScreen('login')">Sign in</a></div>
+    </div>
+
+    <!-- HOME -->
+    <div id="screen-home" class="screen">
+      <div class="topbar">
+        <div class="topbar-title">🧠 Mentulis</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span id="home-chats-badge" style="font-size:12px;color:var(--text-secondary)"></span>
+          <button onclick="gotoScreen('profile')" style="width:36px;height:36px;border-radius:50%;background:var(--purple);border:none;cursor:pointer;color:#fff;font-weight:700;font-size:14px" id="home-avatar">?</button>
+        </div>
+      </div>
+      <div class="home-content">
+        <div>
+          <div class="greeting">Hello, <span id="home-username">friend</span> 👋</div>
+          <div class="greeting-sub">How are you feeling today?</div>
+        </div>
+        <div class="card">
+          <div style="font-size:14px;font-weight:600;margin-bottom:12px">Today's mood</div>
+          <div class="mood-row">
+            <button class="mood-btn" onclick="selectMood(1,this)"><span>😞</span><span>Very low</span></button>
+            <button class="mood-btn" onclick="selectMood(2,this)"><span>😔</span><span>Low</span></button>
+            <button class="mood-btn" onclick="selectMood(3,this)"><span>😐</span><span>Okay</span></button>
+            <button class="mood-btn" onclick="selectMood(4,this)"><span>😊</span><span>Good</span></button>
+            <button class="mood-btn" onclick="selectMood(5,this)"><span>😁</span><span>Great</span></button>
+          </div>
+          <div id="mood-saved-msg" style="font-size:13px;color:var(--green);margin-top:8px;display:none">✓ Mood saved!</div>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-num" id="stat-streak">0</div><div class="stat-label">Day streak 🔥</div></div>
+          <div class="stat-card"><div class="stat-num" id="stat-chats">0</div><div class="stat-label">Sessions</div></div>
+          <div class="stat-card"><div class="stat-num" id="stat-tools">0</div><div class="stat-label">Exercises</div></div>
+        </div>
+        <div style="font-size:14px;font-weight:700">What would you like to do?</div>
+        <div class="quick-actions">
+          <div class="quick-card" onclick="gotoScreen('chat')"><div class="quick-icon">💬</div><div class="quick-title">Talk to Mentulis</div><div class="quick-sub">AI wellness companion</div></div>
+          <div class="quick-card" onclick="gotoScreen('tools')"><div class="quick-icon">🧘</div><div class="quick-title">Wellness Tools</div><div class="quick-sub">CBT, breathing & more</div></div>
+          <div class="quick-card" onclick="gotoScreen('mood')"><div class="quick-icon">📊</div><div class="quick-title">Mood History</div><div class="quick-sub">Track your progress</div></div>
+          <div class="quick-card" onclick="openTool('phq9')"><div class="quick-icon">📋</div><div class="quick-title">PHQ-9 Check</div><div class="quick-sub">Depression screening</div></div>
+        </div>
+        <div id="premium-banner-home" style="background:linear-gradient(135deg,#FFD700,#FF9F43);border-radius:var(--radius);padding:20px;color:#fff;display:none">
+          <h3 style="font-size:18px;font-weight:700;margin-bottom:4px">✨ Go Premium</h3>
+          <p style="font-size:13px;opacity:.9;margin-bottom:14px">Unlimited conversations & advanced tools — $4.99/month</p>
+          <button class="btn btn-sm" style="background:rgba(255,255,255,.25);color:#fff" onclick="upgradePremium()">Upgrade now</button>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <button class="nav-btn active" onclick="gotoScreen('home')" id="bnav-home">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Home
+        </button>
+        <button class="nav-btn" onclick="gotoScreen('chat')" id="bnav-chat">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Chat
+        </button>
+        <button class="nav-btn" onclick="gotoScreen('tools')" id="bnav-tools">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>Tools
+        </button>
+        <button class="nav-btn" onclick="gotoScreen('profile')" id="bnav-profile">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>Profile
+        </button>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div id="screen-chat" class="screen" style="background:var(--bg)">
+      <div class="topbar">
+        <button class="topbar-back" onclick="gotoScreen('home')">←</button>
+        <div class="topbar-title">💬 Mentulis AI</div>
+        <button onclick="clearChat()" style="background:none;border:none;cursor:pointer;color:var(--text-secondary);font-size:13px">New chat</button>
+      </div>
+      <div id="crisis-banner" style="background:#FFF0F0;border:1.5px solid var(--red);border-radius:12px;padding:14px 16px;margin:12px 16px;font-size:13px;color:#C0392B;display:none">
+        <strong>🆘 If you're in crisis, help is available now:</strong><br>
+        🇨🇦 Canada: <strong>988</strong> &nbsp;|&nbsp; 🇵🇰 Pakistan Umang: <strong>0317-4288665</strong> &nbsp;|&nbsp; 🇮🇳 India iCall: <strong>9152987821</strong>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-empty" id="chat-empty">
+          <div class="chat-empty-icon">💙</div>
+          <div class="chat-empty-title">I'm here for you</div>
+          <div class="chat-empty-sub">Share what's on your mind — a safe, judgement-free space</div>
+        </div>
+      </div>
+      <div id="typing-indicator" style="display:none;padding:8px 16px">
+        <div class="msg ai"><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div></div>
+      </div>
+      <div class="chat-starters" id="chat-starters">
+        <button class="starter-chip" onclick="sendStarter(this)">😔 I'm feeling anxious</button>
+        <button class="starter-chip" onclick="sendStarter(this)">😤 I had a hard day</button>
+        <button class="starter-chip" onclick="sendStarter(this)">🛌 I can't sleep</button>
+        <button class="starter-chip" onclick="sendStarter(this)">😰 Family pressure</button>
+        <button class="starter-chip" onclick="sendStarter(this)">🗣️ I need to vent</button>
+      </div>
+      <div class="limit-banner" id="limit-banner">
+        <p>You've used all 10 free conversations. Upgrade for unlimited access.</p>
+        <button class="btn btn-sm" onclick="upgradePremium()">Upgrade to Premium — $4.99/mo</button>
+      </div>
+      <div class="chat-input-area">
+        <textarea class="chat-textarea" id="chat-input" placeholder="How are you feeling?" rows="1" oninput="autoResize(this)" onkeydown="chatKeyDown(event)"></textarea>
+        <button class="icon-btn voice-btn" id="voice-btn" onclick="toggleVoice()" title="Voice input">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 016 0v6a3 3 0 01-3 3z"/></svg>
+        </button>
+        <button class="icon-btn send-btn" id="send-btn" onclick="sendMessage()" disabled>
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+        </button>
+      </div>
+      <div class="bottom-nav">
+        <button class="nav-btn" onclick="gotoScreen('home')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Home</button>
+        <button class="nav-btn active"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Chat</button>
+        <button class="nav-btn" onclick="gotoScreen('tools')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>Tools</button>
+        <button class="nav-btn" onclick="gotoScreen('profile')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>Profile</button>
+      </div>
+    </div>
+
+    <!-- TOOLS -->
+    <div id="screen-tools" class="screen">
+      <div class="topbar">
+        <button class="topbar-back" onclick="gotoScreen('home')">←</button>
+        <div class="topbar-title">🧘 Wellness Tools</div>
+        <div></div>
+      </div>
+      <div class="tools-content">
+        <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px">Evidence-based CBT &amp; DBT exercises</p>
+        <div class="tools-grid">
+          <div class="tool-card" onclick="openTool('breathing')"><div class="tool-icon">🫁</div><div class="tool-name">Box Breathing</div><div class="tool-desc">Calm your nervous system</div></div>
+          <div class="tool-card" onclick="openTool('grounding')"><div class="tool-icon">🌱</div><div class="tool-name">5-4-3-2-1 Grounding</div><div class="tool-desc">Anchor to the present moment</div></div>
+          <div class="tool-card" onclick="openTool('thought')"><div class="tool-icon">💭</div><div class="tool-name">Thought Record</div><div class="tool-desc">Challenge negative thoughts (CBT)</div></div>
+          <div class="tool-card" onclick="openTool('gratitude')"><div class="tool-icon">🙏</div><div class="tool-name">Gratitude Journal</div><div class="tool-desc">Build positive thinking</div></div>
+          <div class="tool-card" onclick="openTool('phq9')"><div class="tool-icon">📋</div><div class="tool-name">PHQ-9</div><div class="tool-desc">Depression screening</div></div>
+          <div class="tool-card" onclick="openTool('gad7')"><div class="tool-icon">📝</div><div class="tool-name">GAD-7</div><div class="tool-desc">Anxiety screening</div></div>
+          <div class="tool-card" onclick="openTool('bodyscan')"><div class="tool-icon">🧘</div><div class="tool-name">Body Scan</div><div class="tool-desc">Mindful relaxation (DBT)</div></div>
+          <div class="tool-card" onclick="openTool('affirmations')"><div class="tool-icon">✨</div><div class="tool-name">Affirmations</div><div class="tool-desc">Culturally-aware self-compassion</div></div>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <button class="nav-btn" onclick="gotoScreen('home')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Home</button>
+        <button class="nav-btn" onclick="gotoScreen('chat')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Chat</button>
+        <button class="nav-btn active"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>Tools</button>
+        <button class="nav-btn" onclick="gotoScreen('profile')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>Profile</button>
+      </div>
+    </div>
+
+    <!-- MOOD HISTORY -->
+    <div id="screen-mood" class="screen">
+      <div class="topbar">
+        <button class="topbar-back" onclick="gotoScreen('home')">←</button>
+        <div class="topbar-title">📊 Mood History</div>
+        <div></div>
+      </div>
+      <div class="mood-history-content">
+        <div id="mood-history-list">
+          <div style="text-align:center;padding:40px 20px;color:var(--text-secondary)">
+            <div style="font-size:48px;margin-bottom:12px">📊</div>
+            <p>No mood logs yet. Check in from the Home screen!</p>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <button class="nav-btn" onclick="gotoScreen('home')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Home</button>
+        <button class="nav-btn" onclick="gotoScreen('chat')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Chat</button>
+        <button class="nav-btn active"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>Mood</button>
+        <button class="nav-btn" onclick="gotoScreen('profile')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>Profile</button>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="screen-profile" class="screen">
+      <div class="topbar">
+        <button class="topbar-back" onclick="gotoScreen('home')">←</button>
+        <div class="topbar-title">👤 Profile</div>
+        <div></div>
+      </div>
+      <div class="profile-content">
+        <div class="profile-avatar" id="profile-avatar">?</div>
+        <div class="profile-name" id="profile-name">—</div>
+        <div class="profile-email" id="profile-email">—</div>
+        <div class="premium-banner" id="profile-premium-banner">
+          <h3>✨ Upgrade to Premium</h3>
+          <p>Unlimited AI chats, advanced tools & more — just $4.99/month</p>
+          <button class="btn btn-sm" onclick="upgradePremium()">Get Premium</button>
+        </div>
+        <div id="profile-premium-active" style="background:var(--green-light);border-radius:14px;padding:16px;margin-bottom:20px;text-align:center;display:none">
+          <div style="font-size:24px;margin-bottom:4px">⭐</div>
+          <div style="font-weight:700;color:var(--green)">Premium Active</div>
+          <div style="font-size:13px;color:var(--text-secondary)">Unlimited conversations</div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-label">Language</div>
+          <div class="settings-item" style="cursor:default">
+            <div class="settings-item-left"><span class="settings-icon">🌐</span><div><div class="settings-item-title">Chat Language</div><div class="settings-item-sub">AI responds in your language</div></div></div>
+            <select class="lang-select" id="lang-select" onchange="setLanguage(this.value)">
+              <option value="en">English</option>
+              <option value="ur">اردو Urdu</option>
+              <option value="hi">हिंदी Hindi</option>
+              <option value="pa">ਪੰਜਾਬੀ Punjabi</option>
+              <option value="ar">العربية Arabic</option>
+              <option value="fr">Français French</option>
+            </select>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-label">Crisis Resources</div>
+          <div class="crisis-info">
+            <strong style="display:block;margin-bottom:6px">🆘 If you're in danger, please reach out:</strong>
+            🇨🇦 Canada: <strong>988</strong><br>
+            🇵🇰 Pakistan Umang: <strong>0317-4288665</strong><br>
+            🇮🇳 India iCall: <strong>9152987821</strong><br>
+            🌍 International: <strong>findahelpline.com</strong>
+          </div>
+        </div>
+        <div style="margin-top:20px">
+          <button class="btn btn-danger" onclick="handleSignOut()">Sign Out</button>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <button class="nav-btn" onclick="gotoScreen('home')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Home</button>
+        <button class="nav-btn" onclick="gotoScreen('chat')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Chat</button>
+        <button class="nav-btn" onclick="gotoScreen('tools')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>Tools</button>
+        <button class="nav-btn active"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>Profile</button>
+      </div>
+    </div>
+
+  </div><!-- end app-shell -->
+</div><!-- end root -->
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// FIREBASE
+const firebaseConfig = {
+  apiKey: "AIzaSyC7G3bPDOAFmTTgv4GbcorVI8qLlPd3qfw",
+  authDomain: "mentulis-ae4d4.firebaseapp.com",
+  projectId: "mentulis-ae4d4",
+  storageBucket: "mentulis-ae4d4.firebasestorage.app",
+  messagingSenderId: "642930286508",
+  appId: "1:642930286508:web:6c1ac5b4be21920e286409"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// STATE
+let currentUser = null;
+let userProfile = { isPremium:false, freeChatsUsed:0, language:'en', toolsUsed:0 };
+let chatMessages = [];
+let isRecording = false;
+let recognition = null;
+const FREE_LIMIT = 10;
+
+// NAVIGATION
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + id);
+  if (el) { el.classList.add('active'); el.scrollTop = 0; }
+}
+function gotoScreen(id) {
+  showScreen(id);
+  ['home','chat','tools','mood','profile'].forEach(n => {
+    ['bnav-','snav-'].forEach(prefix => {
+      const btn = document.getElementById(prefix + n);
+      if (btn) btn.classList.toggle('active', n === id);
+    });
+  });
+  if (id === 'mood') loadMoodHistory();
+}
+
+// AUTH LISTENER
+auth.onAuthStateChanged(async user => {
+  if (user) {
+    currentUser = user;
+    await loadUserProfile();
+    updateUI();
+    gotoScreen('home');
+  } else {
+    currentUser = null;
+    showScreen('splash');
+  }
+});
+
+async function loadUserProfile() {
+  try {
+    const doc = await db.collection('users').doc(currentUser.uid).get();
+    if (doc.exists) {
+      userProfile = { ...userProfile, ...doc.data() };
+    } else {
+      userProfile = { isPremium:false, freeChatsUsed:0, language:'en', toolsUsed:0,
+        displayName: currentUser.displayName || '', email: currentUser.email,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+      await db.collection('users').doc(currentUser.uid).set(userProfile);
+    }
+  } catch(e) { console.warn('Profile load:', e); }
+}
+
+async function saveUserProfile(updates) {
+  userProfile = { ...userProfile, ...updates };
+  if (!currentUser) return;
+  try { await db.collection('users').doc(currentUser.uid).update(updates); }
+  catch(e) { console.warn('Profile save:', e); }
+}
+
+function updateUI() {
+  if (!currentUser) return;
+  const name = currentUser.displayName || userProfile.displayName || currentUser.email?.split('@')[0] || 'friend';
+  const initial = name.charAt(0).toUpperCase();
+  // Home
+  const un = document.getElementById('home-username'); if (un) un.textContent = name;
+  const av = document.getElementById('home-avatar'); if (av) av.textContent = initial;
+  const badge = document.getElementById('home-chats-badge');
+  if (badge) badge.textContent = userProfile.isPremium ? '⭐ Premium' : (Math.max(0, FREE_LIMIT - userProfile.freeChatsUsed) + ' free chats left');
+  // Premium banner
+  const pb = document.getElementById('premium-banner-home');
+  if (pb) pb.style.display = userProfile.isPremium ? 'none' : 'block';
+  // Stats
+  const sc = document.getElementById('stat-chats'); if (sc) sc.textContent = userProfile.freeChatsUsed || 0;
+  const st = document.getElementById('stat-tools'); if (st) st.textContent = userProfile.toolsUsed || 0;
+  // Profile
+  const pn = document.getElementById('profile-name'); if (pn) pn.textContent = name;
+  const pe = document.getElementById('profile-email'); if (pe) pe.textContent = currentUser.email || '';
+  const pa = document.getElementById('profile-avatar'); if (pa) pa.textContent = initial;
+  document.getElementById('profile-premium-banner').style.display = userProfile.isPremium ? 'none' : 'block';
+  document.getElementById('profile-premium-active').style.display = userProfile.isPremium ? 'block' : 'none';
+  // Sidebar
+  const sav = document.getElementById('sidebar-avatar'); if (sav) sav.textContent = initial;
+  const snm = document.getElementById('sidebar-name'); if (snm) snm.textContent = name;
+  const spl = document.getElementById('sidebar-plan'); if (spl) spl.textContent = userProfile.isPremium ? '⭐ Premium' : 'Free plan';
+  const sus = document.getElementById('sidebar-user-section'); if (sus) sus.style.display = 'block';
+  // Language
+  const ls = document.getElementById('lang-select'); if (ls) ls.value = userProfile.language || 'en';
+}
+
+async function signInWithEmail() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  const btn = document.getElementById('login-btn');
+  if (!email || !pass) { showErr(errEl,'Please fill in all fields.'); return; }
+  btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; errEl.classList.remove('show');
+  try { await auth.signInWithEmailAndPassword(email, pass); }
+  catch(e) { showErr(errEl, authErr(e.code)); btn.disabled=false; btn.textContent='Sign In'; }
+}
+
+async function signUpWithEmail() {
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const pass = document.getElementById('signup-password').value;
+  const errEl = document.getElementById('signup-error');
+  const btn = document.getElementById('signup-btn');
+  if (!name||!email||!pass) { showErr(errEl,'Please fill in all fields.'); return; }
+  if (pass.length < 8) { showErr(errEl,'Password must be at least 8 characters.'); return; }
+  btn.disabled=true; btn.innerHTML='<div class="spinner"></div>'; errEl.classList.remove('show');
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    await cred.user.updateProfile({ displayName: name });
+  } catch(e) { showErr(errEl, authErr(e.code)); btn.disabled=false; btn.textContent='Create Account'; }
+}
+
+async function signInWithGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  try { await auth.signInWithPopup(provider); }
+  catch(e) { showToast('Google sign-in failed. Please try again.'); }
+}
+
+async function handleSignOut() {
+  await auth.signOut();
+  chatMessages = [];
+  userProfile = { isPremium:false, freeChatsUsed:0, language:'en', toolsUsed:0 };
+  showScreen('splash');
+}
+
+function authErr(code) {
+  const m = {
+    'auth/user-not-found':'No account found with that email.',
+    'auth/wrong-password':'Incorrect password.',
+    'auth/email-already-in-use':'An account with this email already exists.',
+    'auth/weak-password':'Password must be at least 8 characters.',
+    'auth/invalid-email':'Please enter a valid email address.',
+    'auth/too-many-requests':'Too many attempts. Try again later.',
+    'auth/popup-closed-by-user':'Sign-in cancelled.'
+  };
+  return m[code] || 'Something went wrong. Please try again.';
+}
+function showErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
+
+// MOOD
+const moodEmojis = ['','😞','😔','😐','😊','😁'];
+const moodLabels = ['','Very Low','Low','Okay','Good','Great'];
+
+async function selectMood(level, btn) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const today = new Date().toISOString().split('T')[0];
+  try {
+    await db.collection('users').doc(currentUser.uid).collection('moods').doc(today).set({
+      level, label:moodLabels[level], emoji:moodEmojis[level],
+      date:today, createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    const msg = document.getElementById('mood-saved-msg');
+    if (msg) { msg.style.display='block'; setTimeout(()=>{msg.style.display='none';},2000); }
+    await updateStreak();
+  } catch(e) { showToast('Could not save mood.'); }
+}
+
+async function updateStreak() {
+  try {
+    const snap = await db.collection('users').doc(currentUser.uid).collection('moods').orderBy('date','desc').limit(30).get();
+    const dates = snap.docs.map(d => d.id);
+    let streak = 0;
+    const today = new Date();
+    for (let i=0;i<30;i++) {
+      const d = new Date(today); d.setDate(d.getDate()-i);
+      if (dates.includes(d.toISOString().split('T')[0])) streak++;
+      else break;
+    }
+    const el = document.getElementById('stat-streak'); if (el) el.textContent = streak;
+  } catch(e) {}
+}
+
+async function loadMoodHistory() {
+  const list = document.getElementById('mood-history-list');
+  if (!list || !currentUser) return;
+  list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-secondary)">Loading...</div>';
+  try {
+    const snap = await db.collection('users').doc(currentUser.uid).collection('moods').orderBy('date','desc').limit(30).get();
+    if (snap.empty) { list.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-secondary)"><div style="font-size:48px;margin-bottom:12px">📊</div><p>No mood logs yet!</p></div>'; return; }
+    list.innerHTML = snap.docs.map(doc => {
+      const d = doc.data();
+      const dt = new Date(d.date+'T12:00:00').toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'});
+      return '<div class="mood-log-item"><div class="mood-log-emoji">'+d.emoji+'</div><div class="mood-log-info"><div class="mood-log-date">'+dt+'</div><div class="mood-log-label">'+d.label+'</div></div><div style="font-size:20px;font-weight:700;color:var(--purple)">'+d.level+'/5</div></div>';
+    }).join('');
+  } catch(e) { list.innerHTML='<div style="padding:20px;color:var(--text-secondary)">Could not load history.</div>'; }
+}
+
+// CHAT
+const CRISIS_WORDS = ['suicid','kill myself','end my life','cant go on','no reason to live','want to die','self harm','hurt myself','end it all','not worth living','better off dead'];
+function isCrisis(text) { const l=text.toLowerCase(); return CRISIS_WORDS.some(w=>l.includes(w)); }
+
+function addMessage(role, text) {
+  const container = document.getElementById('chat-messages');
+  document.getElementById('chat-empty').style.display='none';
+  document.getElementById('chat-starters').style.display='none';
+  chatMessages.push({role, content:text});
+  const div = document.createElement('div');
+  div.className = 'msg '+(role==='user'?'user':'ai');
+  const time = new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
+  const safe = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  div.innerHTML = '<div class="msg-bubble">'+safe+'</div><div class="msg-time">'+time+'</div>';
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function setTyping(show) {
+  document.getElementById('typing-indicator').style.display = show?'block':'none';
+  if (show) document.getElementById('chat-messages').scrollTop = 9999;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  if (!userProfile.isPremium && userProfile.freeChatsUsed >= FREE_LIMIT) {
+    document.getElementById('limit-banner').classList.add('show'); return;
+  }
+  document.getElementById('crisis-banner').style.display = isCrisis(text)?'block':'none';
+  input.value=''; input.style.height='auto';
+  document.getElementById('send-btn').disabled=true;
+  addMessage('user', text);
+  setTyping(true);
+  try {
+    const resp = await fetch('/api/chat',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:chatMessages.slice(-20),userEmail:currentUser?.email,sessionId:currentUser?.uid,isPremium:userProfile.isPremium,language:userProfile.language||'en'})
+    });
+    const data = await resp.json();
+    setTyping(false);
+    if (resp.status===402||data.error==='free_limit_reached') { document.getElementById('limit-banner').classList.add('show'); return; }
+    if (!resp.ok) throw new Error(data.message||'AI error');
+    addMessage('assistant', data.reply);
+    const newCount = (userProfile.freeChatsUsed||0)+1;
+    await saveUserProfile({freeChatsUsed:newCount});
+    updateUI();
+    try { await db.collection('users').doc(currentUser.uid).collection('chats').add({userMsg:text,aiMsg:data.reply,timestamp:firebase.firestore.FieldValue.serverTimestamp()}); } catch(e){}
+  } catch(e) {
+    setTyping(false);
+    addMessage('assistant',"I'm here with you. I had a small hiccup — could you share that again? 💙");
+  }
+  document.getElementById('send-btn').disabled=false;
+}
+
+function clearChat() {
+  chatMessages=[];
+  const c=document.getElementById('chat-messages');
+  c.querySelectorAll('.msg').forEach(m=>m.remove());
+  document.getElementById('chat-empty').style.display='flex';
+  document.getElementById('chat-starters').style.display='flex';
+  document.getElementById('crisis-banner').style.display='none';
+  document.getElementById('limit-banner').classList.remove('show');
+}
+
+function sendStarter(btn) {
+  document.getElementById('chat-input').value = btn.textContent.trim();
+  document.getElementById('send-btn').disabled=false;
+  sendMessage();
+}
+
+function chatKeyDown(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} }
+
+function autoResize(el) {
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,120)+'px';
+  document.getElementById('send-btn').disabled=el.value.trim().length===0;
+}
+
+// VOICE
+function toggleVoice() {
+  if(!('SpeechRecognition' in window||'webkitSpeechRecognition' in window)){showToast('Voice input not supported in this browser.');return;}
+  if(isRecording){recognition?.stop();return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();
+  const langMap={en:'en-US',ur:'ur-PK',hi:'hi-IN',pa:'pa-IN',ar:'ar-SA',fr:'fr-FR'};
+  recognition.lang=langMap[userProfile.language]||'en-US';
+  recognition.onstart=()=>{isRecording=true;document.getElementById('voice-btn').classList.add('recording');};
+  recognition.onresult=(e)=>{const t=e.results[0][0].transcript;const inp=document.getElementById('chat-input');inp.value=t;autoResize(inp);};
+  recognition.onend=()=>{isRecording=false;document.getElementById('voice-btn').classList.remove('recording');};
+  recognition.onerror=()=>{isRecording=false;document.getElementById('voice-btn').classList.remove('recording');};
+  recognition.start();
+}
+
+// PREMIUM
+async function upgradePremium() {
+  showToast('💳 Stripe payment coming soon! Activating demo mode...');
+  setTimeout(async()=>{
+    await saveUserProfile({isPremium:true});
+    updateUI();
+    document.getElementById('limit-banner').classList.remove('show');
+    showToast('⭐ Premium activated! Unlimited conversations unlocked.');
+  },1500);
+}
+
+// LANGUAGE
+function setLanguage(lang) { saveUserProfile({language:lang}); showToast('Language updated!'); }
+
+// TOOLS
+let breathTimer=null;
+function openTool(name) {
+  const bodies={
+    breathing: buildBreathing(),
+    grounding: buildGrounding(),
+    thought: buildThought(),
+    gratitude: buildGratitude(),
+    phq9: buildAssessment('phq9'),
+    gad7: buildAssessment('gad7'),
+    bodyscan: buildBodyScan(),
+    affirmations: buildAffirmations()
+  };
+  document.getElementById('modal-body').innerHTML = bodies[name]||'<p>Coming soon!</p>';
+  document.getElementById('modal-overlay').classList.add('show');
+  if(currentUser) { saveUserProfile({toolsUsed:(userProfile.toolsUsed||0)+1}); updateUI(); }
+  if(name==='breathing') startBreathing();
+}
+
+function closeModal(e) {
+  if(e&&e.target!==document.getElementById('modal-overlay')&&!e.target.classList.contains('modal-close')) return;
+  document.getElementById('modal-overlay').classList.remove('show');
+  stopBreathing();
+}
+
+// Breathing
+function buildBreathing() {
+  return '<div class="modal-title">🫁 Box Breathing</div><p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px">4 counts in · 4 hold · 4 out · 4 hold. Repeat 4 times.</p><div class="breath-circle" id="breath-circle">Breathe</div><div style="text-align:center;margin-top:16px"><div id="breath-instruction" style="font-size:18px;font-weight:600;color:var(--purple)">Ready…</div><div id="breath-count" style="font-size:32px;font-weight:800;margin:8px 0;color:var(--text)">—</div><button class="btn btn-primary btn-sm" style="margin:0 auto;display:inline-flex" onclick="startBreathing()">Start</button></div>';
+}
+function startBreathing() {
+  stopBreathing();
+  const steps=[{label:'Inhale',dur:4,cls:'inhale'},{label:'Hold',dur:4,cls:'inhale'},{label:'Exhale',dur:4,cls:'exhale'},{label:'Hold',dur:4,cls:'exhale'}];
+  let si=0,cycle=0;
+  function tick() {
+    const circle=document.getElementById('breath-circle');
+    const instr=document.getElementById('breath-instruction');
+    const cnt=document.getElementById('breath-count');
+    if(!circle)return;
+    const step=steps[si];
+    circle.className='breath-circle '+step.cls;
+    if(instr)instr.textContent=step.label;
+    let c=step.dur; if(cnt)cnt.textContent=c;
+    breathTimer=setInterval(()=>{
+      c--; if(cnt)cnt.textContent=c;
+      if(c<=0){
+        clearInterval(breathTimer);
+        si=(si+1)%steps.length;
+        if(si===0){cycle++;if(cycle>=4){if(circle)circle.className='breath-circle';if(instr)instr.textContent='Well done! 🌟';if(cnt)cnt.textContent='';return;}}
+        tick();
+      }
+    },1000);
+  }
+  tick();
+}
+function stopBreathing(){if(breathTimer){clearInterval(breathTimer);breathTimer=null;}}
+
+// Grounding
+function buildGrounding() {
+  const steps=[['👁️ 5 things you can SEE'],['✋ 4 things you can TOUCH'],['👂 3 things you can HEAR'],['👃 2 things you can SMELL'],['👅 1 thing you can TASTE']];
+  return '<div class="modal-title">🌱 5-4-3-2-1 Grounding</div><p style="font-size:14px;color:var(--text-secondary);margin-bottom:20px">Anchor yourself to the present moment.</p>'+steps.map(([label])=>'<div style="margin-bottom:14px"><div style="font-size:14px;font-weight:600;margin-bottom:6px">'+label+'</div><input class="input" placeholder="Type what you notice…" style="font-size:14px"></div>').join('')+'<button class="btn btn-primary" onclick="groundingDone()">I feel more grounded ✓</button>';
+}
+function groundingDone() {
+  document.getElementById('modal-body').innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:64px;margin-bottom:16px">🌱</div><h3 style="font-size:20px;font-weight:700;margin-bottom:8px">Well done!</h3><p style="color:var(--text-secondary)">You just brought yourself back to the present moment. That takes real strength.</p><button class="btn btn-secondary" style="margin-top:20px" onclick="closeModal()">Close</button></div>';
+}
+
+// Thought Record
+function buildThought() {
+  return '<div class="modal-title">💭 Thought Record (CBT)</div><p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px">Challenge unhelpful thinking patterns step by step.</p><div class="input-group"><label class="input-label">1. What happened?</label><input class="input" id="tr-situation" placeholder="Describe the situation"></div><div class="input-group"><label class="input-label">2. What thought went through your mind?</label><input class="input" id="tr-thought" placeholder="e.g. Nobody likes me"></div><div class="input-group"><label class="input-label">3. How does that make you feel? (0-100%)</label><input class="input" id="tr-emotion" placeholder="e.g. Sad 70%, Anxious 50%"></div><div class="input-group"><label class="input-label">4. Evidence that SUPPORTS this thought?</label><input class="input" id="tr-for" placeholder="Facts that agree"></div><div class="input-group"><label class="input-label">5. Evidence that CHALLENGES this thought?</label><input class="input" id="tr-against" placeholder="Facts that contradict"></div><div class="input-group"><label class="input-label">6. A more balanced thought would be…</label><input class="input" id="tr-balanced" placeholder="Reframe with both sides in mind"></div><button class="btn btn-primary" onclick="thoughtRecordDone()">Reflect ✓</button>';
+}
+function thoughtRecordDone() {
+  const b=document.getElementById('tr-balanced')?.value||'';
+  document.getElementById('modal-body').innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:64px;margin-bottom:16px">💭</div><h3 style="font-size:20px;font-weight:700;margin-bottom:12px">Balanced thought saved</h3>'+(b?'<div style="background:var(--purple-light);border-radius:12px;padding:14px;color:var(--purple);font-style:italic;margin-bottom:16px">"'+b+'"</div>':'')+'<p style="color:var(--text-secondary);font-size:14px">Challenging automatic thoughts takes practice. You\'re doing great.</p><button class="btn btn-secondary" style="margin-top:16px" onclick="closeModal()">Close</button></div>';
+}
+
+// Gratitude
+function buildGratitude() {
+  return '<div class="modal-title">🙏 Gratitude Journal</div><p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px">Write 3 things you\'re grateful for today — small things count.</p>'+[1,2,3].map(i=>'<div class="input-group"><label class="input-label">'+i+'.</label><input class="input" id="gr-'+i+'" placeholder="I\'m grateful for…"></div>').join('')+'<button class="btn btn-primary" onclick="gratitudeDone()">Save ✓</button>';
+}
+async function gratitudeDone() {
+  const entries=[1,2,3].map(i=>document.getElementById('gr-'+i)?.value||'').filter(Boolean);
+  if(currentUser&&entries.length) {
+    try { await db.collection('users').doc(currentUser.uid).collection('gratitude').add({entries,date:new Date().toISOString().split('T')[0],timestamp:firebase.firestore.FieldValue.serverTimestamp()}); } catch(e){}
+  }
+  document.getElementById('modal-body').innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:64px;margin-bottom:16px">🙏</div><h3>Gratitude saved!</h3><p style="color:var(--text-secondary);margin-top:8px">Practicing gratitude rewires the brain toward positivity over time.</p><button class="btn btn-secondary" style="margin-top:20px" onclick="closeModal()">Close</button></div>';
+}
+
+// Body Scan
+function buildBodyScan() {
+  const steps=['Close your eyes and take 3 slow deep breaths.','Bring attention to your feet. Notice any sensations — warmth, tingling, pressure.','Slowly move your attention up to your calves and knees.','Notice your thighs and hips. Are you holding tension? Try to soften.','Bring awareness to your belly and chest. Notice your breath rising and falling.','Move to your shoulders. Let them drop and relax.','Notice your hands and arms. Uncurl your fingers if they\'re tense.','Bring attention to your neck and jaw. Relax your jaw.','Finally, rest attention on the top of your head.','Take one final deep breath. Open your eyes when ready. 🌟'];
+  window._scanSteps=steps; window._scanIdx=0;
+  return '<div class="modal-title">🧘 Body Scan (DBT)</div><div id="scan-text" style="font-size:16px;line-height:1.7;padding:8px 0;min-height:80px">'+steps[0]+'</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:20px"><span id="scan-step" style="font-size:13px;color:var(--text-secondary)">Step 1 of '+steps.length+'</span><button class="btn btn-primary btn-sm" onclick="bodyScanNext()">Next →</button></div>';
+}
+function bodyScanNext() {
+  window._scanIdx=(window._scanIdx||0)+1;
+  if(window._scanIdx>=window._scanSteps.length){document.getElementById('modal-body').innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:64px">🧘</div><h3 style="margin:16px 0 8px">Scan complete</h3><p style="color:var(--text-secondary)">Regular body scans build mind-body awareness.</p><button class="btn btn-secondary" style="margin-top:20px" onclick="closeModal()">Close</button></div>';return;}
+  document.getElementById('scan-text').textContent=window._scanSteps[window._scanIdx];
+  document.getElementById('scan-step').textContent='Step '+(window._scanIdx+1)+' of '+window._scanSteps.length;
+}
+
+// Affirmations
+function buildAffirmations() {
+  const affs=["I am worthy of love and belonging, even when I feel like I'm not enough.","My struggles do not define me. I am more than my hard days.","It is okay to ask for help. Seeking support is a sign of strength.","I am learning and growing. I don't have to have everything figured out.","My feelings are valid. I allow myself to feel without judgment.","I bring value to the people around me, even when I can't see it.","I am doing the best I can with what I have today.","It is okay to rest. I don't have to earn my right to exist.","I am not a burden. The people who love me want to support me.","Each day I wake up is a new chance to begin again."];
+  const aff=affs[Math.floor(Math.random()*affs.length)];
+  return '<div class="modal-title">✨ Affirmation</div><div style="background:linear-gradient(135deg,var(--purple),var(--purple-dark));border-radius:16px;padding:28px;text-align:center;margin:16px 0"><div style="font-size:18px;line-height:1.6;color:#fff;font-style:italic">"'+aff+'"</div></div><p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px">Read this slowly, 3 times. Let the words land.</p><button class="btn btn-secondary" onclick="openTool(\'affirmations\')">New affirmation</button>';
+}
+
+// Assessments
+const phq9Qs=['Little interest or pleasure in doing things?','Feeling down, depressed, or hopeless?','Trouble falling or staying asleep, or sleeping too much?','Feeling tired or having little energy?','Poor appetite or overeating?','Feeling bad about yourself — or that you are a failure?','Trouble concentrating on things?','Moving/speaking unusually slowly or being fidgety?','Thoughts that you would be better off dead, or of hurting yourself?'];
+const gad7Qs=['Feeling nervous, anxious, or on edge?','Not being able to stop or control worrying?','Worrying too much about different things?','Trouble relaxing?','Being so restless that it\'s hard to sit still?','Becoming easily annoyed or irritable?','Feeling afraid as if something awful might happen?'];
+const opts=['Not at all','Several days','More than half the days','Nearly every day'];
+let aAnswers=[], aType='';
+
+function buildAssessment(type) {
+  aType=type; aAnswers=[];
+  const qs=type==='phq9'?phq9Qs:gad7Qs;
+  const title=type==='phq9'?'📋 PHQ-9 Depression Screening':'📝 GAD-7 Anxiety Screening';
+  return '<div class="modal-title">'+title+'</div><p style="font-size:13px;color:var(--text-secondary);margin-bottom:4px">⚠️ Screening tool only — not a diagnosis. Consult a professional.</p><p style="font-size:14px;margin-bottom:20px">Over the last 2 weeks, how often have you been bothered by:</p>'+qs.map((q,i)=>'<div class="assessment-q"><p>'+(i+1)+'. '+q+'</p><div class="assessment-options">'+opts.map((o,j)=>'<button class="assessment-opt" onclick="selAns('+i+','+j+',this)">'+j+' — '+o+'</button>').join('')+'</div></div>').join('')+'<button class="btn btn-primary" onclick="submitAssessment()">See Results</button>';
+}
+
+function selAns(qi,score,btn) {
+  aAnswers[qi]=score;
+  btn.closest('.assessment-options').querySelectorAll('.assessment-opt').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function submitAssessment() {
+  const qs=aType==='phq9'?phq9Qs:gad7Qs;
+  if(aAnswers.filter(a=>a!==undefined).length<qs.length){showToast('Please answer all questions.');return;}
+  const total=aAnswers.reduce((a,b)=>a+b,0);
+  let severity,color,advice;
+  if(aType==='phq9'){
+    if(total<=4){severity='Minimal';color='#4CAF82';advice='Minimal depression symptoms. Keep taking care of yourself.';}
+    else if(total<=9){severity='Mild';color='#FF9F43';advice='Mild symptoms. Consider talking to someone you trust or a counsellor.';}
+    else if(total<=14){severity='Moderate';color='#FF6B6B';advice='Moderate symptoms. We recommend speaking with a healthcare professional.';}
+    else if(total<=19){severity='Moderately Severe';color='#C0392B';advice='Please reach out to a doctor or mental health professional soon.';}
+    else{severity='Severe';color='#8B0000';advice='Please seek professional help as soon as possible.';}
+  } else {
+    if(total<=4){severity='Minimal';color='#4CAF82';advice='Minimal anxiety symptoms.';}
+    else if(total<=9){severity='Mild';color='#FF9F43';advice='Mild anxiety. Breathing exercises and grounding may help.';}
+    else if(total<=14){severity='Moderate';color='#FF6B6B';advice='Moderate anxiety. Consider speaking with a counsellor.';}
+    else{severity='Severe';color='#C0392B';advice='Please reach out to a mental health professional.';}
+  }
+  if(currentUser){db.collection('users').doc(currentUser.uid).collection('assessments').add({type:aType,score:total,severity,date:new Date().toISOString().split('T')[0],timestamp:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});}
+  document.getElementById('modal-body').innerHTML='<div style="text-align:center;padding:10px 0"><div style="font-size:13px;color:var(--text-secondary)">'+aType.toUpperCase()+' Score</div><div style="font-size:48px;font-weight:800;color:'+color+'">'+total+'</div><div style="font-size:18px;font-weight:600;color:'+color+'">'+severity+'</div><div style="font-size:14px;color:var(--text-secondary);margin-top:8px">'+advice+'</div><div style="background:#FFF0F0;border-radius:12px;padding:14px;margin:16px 0;font-size:13px;color:#C0392B">⚠️ This is a screening tool only — not a diagnosis. Please consult a healthcare professional.</div>'+(total>=10?'<div style="background:var(--purple-light);border-radius:12px;padding:14px;margin-bottom:16px;font-size:13px">💙 Would you like to talk to Mentulis about how you\'re feeling?<br><button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="closeModal();gotoScreen(\'chat\')">Chat now</button></div>':'')+'<button class="btn btn-secondary" onclick="closeModal()">Close</button></div>';
+}
+
+// TOAST
+let toastTimer=null;
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  if(toastTimer)clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// DESKTOP SIDEBAR
+function setupDesktop() {
+  const sb=document.getElementById('desktop-sidebar');
+  if(sb) sb.style.display=window.innerWidth>=768?'flex':'none';
+}
+window.addEventListener('resize',setupDesktop);
+setupDesktop();
+</script>
+</body>
+</html>
