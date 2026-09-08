@@ -3,187 +3,308 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About Mentulis — Our Story & Mission</title>
-  <meta name="description" content="Mentulis is mental wellness for everyone, in 9 languages — born from a founder's lived experience of starting over. Learn our mission and values." />
-  <link rel="icon" type="image/png" href="icon.png" />
+  <title>About — Mentulis</title>
+  <meta name="description" content="Why Mentulis exists, what it deliberately refuses to do, and who builds it." />
+  <link rel="icon" type="image/png" href="icon-v3.png" />
   <link rel="canonical" href="https://www.mentulis.com/about.html" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://www.mentulis.com/about.html" />
-  <meta property="og:title" content="About Mentulis — Our Story & Mission" />
-  <meta property="og:description" content="Mental wellness for everyone, in 9 languages — born from lived experience." />
-  <meta property="og:image" content="https://www.mentulis.com/icon.png" />
-  <meta property="og:site_name" content="Mentulis" />
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="About Mentulis — Our Story & Mission" />
-  <meta name="twitter:description" content="Mental wellness for everyone, in 9 languages — born from lived experience." />
-  <meta name="twitter:image" content="https://www.mentulis.com/icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Jura:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
-  <style>
-    .about-hero {
-      background-image: url('img/canada-banff.jpg');
-    }
-  </style>
+<style>
+  .page-hero { position: relative; padding: 64px 0 28px; overflow: hidden; }
+  .page-hero .orb-1 { width: 400px; height: 400px; top: -160px; right: -70px; }
+  .page-hero .container { position: relative; z-index: 1; }
+
+  .refuse {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 18px; margin-top: 34px;
+  }
+  .refuse-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card);
+    padding: 26px; box-shadow: var(--shadow-sm);
+    transition: transform .22s var(--ease-out), box-shadow .22s var(--ease-out);
+  }
+  .refuse-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .refuse-card h3 { margin-bottom: 8px; }
+  .refuse-card p { margin: 0; color: var(--mute); font-size: .96rem; }
+  .tick {
+    width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center;
+    background: var(--p-blue-bg); color: var(--p-blue-fg); margin-bottom: 14px;
+  }
+
+  .prose { max-width: 740px; }
+  .quote {
+    background: var(--grad-soft); border-radius: var(--r-panel); padding: 40px;
+    font-size: 1.3rem; line-height: 1.5; font-weight: 500; letter-spacing: -0.02em;
+  }
+
+  /* --- Roadmap timeline --------------------------------------------------- */
+  .timeline { list-style: none; margin: 34px 0 0; padding: 0; position: relative; max-width: 720px; }
+  .timeline::before {
+    content: ""; position: absolute; left: 11px; top: 10px; bottom: 10px; width: 2px;
+    background: var(--line); border-radius: 2px;
+  }
+  .tl-item { position: relative; padding: 0 0 26px 44px; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-dot {
+    position: absolute; left: 0; top: 4px; width: 24px; height: 24px; border-radius: 50%;
+    background: var(--card); border: 2px solid var(--line); z-index: 1;
+  }
+  .tl-item.done .tl-dot { background: var(--p-blue-fg); border-color: var(--p-blue-fg); }
+  .tl-item.now .tl-dot  { background: var(--grad); border-color: transparent;
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 16%, transparent); }
+  .tl-tag {
+    display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--mute); margin-bottom: 6px;
+  }
+  .tl-item.done .tl-tag { color: var(--p-blue-fg); }
+  .tl-item.now .tl-tag  { color: var(--accent); }
+  .tl-body h3 { margin-bottom: 6px; }
+  .tl-body p  { margin: 0; color: var(--mute); font-size: .97rem; }
+</style>
 </head>
 <body>
 
   <header class="nav">
     <div class="container nav-inner">
-      <a class="nav-logo" href="index.html"><img src="icon.png" alt="Mentulis logo" />Mentulis</a>
+      <a class="nav-logo" href="index.html"><img src="icon-v3.png" alt="" width="32" height="32" />Mentulis</a>
       <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
         <li><a href="features.html">Features</a></li>
-        <li><a href="about.html" class="active">About</a></li>
+        <li><a href="about.html">About</a></li>
         <li><a href="privacy.html">Privacy</a></li>
       </ul>
-      <a class="btn btn-primary nav-cta" href="index.html#get">Get the app</a>
-      <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
+      <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.mentulis.mentulis">Get the app</a>
     </div>
   </header>
 
-  <!-- ===== Hero ===== -->
-  <section class="page-hero with-photo about-hero">
-    <div class="container" style="max-width: 780px; text-align: center;">
-      <span class="eyebrow on-dark">Our story</span>
-      <h1>Home is a feeling.<br />We help you carry it.</h1>
-      <p class="lead" style="margin-top: 18px;">Mentulis is mental wellness for everyone — and it carries a special understanding for those who packed their whole life into two suitcases, and then had to explain their feelings in a language they're still learning.</p>
-    </div>
-  </section>
-
-  <!-- ===== Mission ===== -->
-  <section class="section">
-    <div class="container split">
-      <div class="split-text reveal">
-        <span class="eyebrow">The gap we saw</span>
-        <h2>Wellness apps weren't built for the newcomer journey</h2>
-        <p>Nearly <strong>1 in 4 people living in Canada is an immigrant</strong>. Each arrival means new paperwork, new winters, new accents — and very often, an old loneliness that has no easy name.</p>
-        <p>Mainstream mental health apps assume fluent English, cultural context that doesn't always fit, and a level of comfort with "talking about feelings" that many cultures express differently. The result: the people under some of the heaviest emotional load are the least served.</p>
-        <p>Mentulis was built to close that gap — and it turns out that what helps someone far from home helps everyone: voice-first, multilingual, culturally aware, and radically private. Wherever you're from, Mentulis is for you.</p>
-      </div>
-      <div class="split-media reveal d1">
-        <img src="img/hero-community.jpg" alt="A group of friends sitting arm in arm, looking out at the water" loading="lazy" />
-        <div class="badge">Every story matters</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Values ===== -->
-  <section class="section" style="background: var(--white);">
+  <section class="page-hero">
+    <div class="orb orb-blue orb-1 drift" aria-hidden="true"></div>
     <div class="container">
-      <div class="section-head center reveal">
-        <span class="eyebrow">What we believe</span>
-        <h2>Three promises we won't break</h2>
-      </div>
-      <div class="grid-3">
-        <div class="card reveal">
-          <div class="value-num">01 — DIGNITY</div>
-          <h3>Your language is not a barrier</h3>
-          <p>Feelings deserve first-language treatment. Mentulis speaks 9 languages not as a feature checkbox, but because comfort lives in your mother tongue.</p>
-        </div>
-        <div class="card reveal d1">
-          <div class="value-num">02 — PRIVACY</div>
-          <h3>Your story stays yours</h3>
-          <p>Journals, moods and exercises never leave your phone. No ads, no trackers, no selling data. Mental health data should never be a business model.</p>
-        </div>
-        <div class="card reveal d2">
-          <div class="value-num">03 — HONESTY</div>
-          <h3>An app knows its place</h3>
-          <p>Mentulis is self-help, not therapy. We say so clearly, we point to real professionals and crisis lines, and we build bridges to human care — never walls.</p>
-        </div>
-      </div>
+      <span class="eyebrow">About</span>
+      <h1 style="max-width:760px;">Support that doesn't <span class="grad-text">wait for a referral.</span></h1>
+      <p class="lead" style="max-width:640px;">
+        Most people who need mental health support are not in crisis. They are tired, stretched,
+        stuck at three in the morning — and months away from an appointment, if one is available
+        at all.
+      </p>
     </div>
   </section>
 
-  <!-- ===== Founder ===== -->
-  <section class="section">
-    <div class="container" style="max-width: 880px;">
-      <div class="section-head center reveal">
-        <span class="eyebrow">The person behind it</span>
-        <h2>From one newcomer's notebook to an app</h2>
-      </div>
-      <div class="founder reveal d1">
-        <div class="founder-avatar">SM</div>
-        <div>
-          <h3>Sheheryar Masood</h3>
-          <div class="role">Founder</div>
-          <p>"I came to Canada from Pakistan in May 2023 — with my wife, our child, and a life packed into suitcases. Back home I was a mid-level executive: a career, a team, family close by, streets where everyone knew my name. Leaving all of that was the hardest decision I've ever made."</p>
-          <p>"Saying you'll start over in a new country is easy. Living it is something else entirely. New language, new people, new workplace — and the quiet weight of being far from everyone who knew you longest. It takes time, and it takes more out of you than anyone warns you."</p>
-          <p>"Mentulis came out of that experience. I've walked the road every newcomer walks, so I know where it gets heavy — and how little support exists in the languages we actually think and feel in. That's why Mentulis speaks nine of them. This isn't just for my community; it's for every person starting over, from their very first day in Canada."</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Languages ===== -->
-  <section class="section" style="background: var(--white);">
+  <section class="section-tight">
     <div class="container">
-      <div class="section-head center reveal">
-        <span class="eyebrow">Languages</span>
-        <h2>Nine languages. One warm welcome.</h2>
-        <p>Chosen to reflect the communities arriving in Canada today — with more on the roadmap.</p>
-      </div>
-      <div class="lang-grid">
-        <div class="lang-chip reveal"><span style="font-size:1.5rem;">🇬🇧</span><div><div class="native">English</div><div class="en">English</div></div></div>
-        <div class="lang-chip reveal"><span style="font-size:1.5rem;">🇫🇷</span><div><div class="native">Français</div><div class="en">French</div></div></div>
-        <div class="lang-chip reveal d1"><span style="font-size:1.5rem;">🇮🇳</span><div><div class="native">ਪੰਜਾਬੀ</div><div class="en">Punjabi</div></div></div>
-        <div class="lang-chip reveal d1"><span style="font-size:1.5rem;">🇮🇳</span><div><div class="native">हिन्दी</div><div class="en">Hindi</div></div></div>
-        <div class="lang-chip reveal d2"><span style="font-size:1.5rem;">🇨🇳</span><div><div class="native">中文</div><div class="en">Mandarin</div></div></div>
-        <div class="lang-chip reveal d2"><span style="font-size:1.5rem;">🇵🇭</span><div><div class="native">Tagalog</div><div class="en">Filipino</div></div></div>
-        <div class="lang-chip reveal d3"><span style="font-size:1.5rem;">🇸🇦</span><div><div class="native">العربية</div><div class="en">Arabic</div></div></div>
-        <div class="lang-chip reveal d3"><span style="font-size:1.5rem;">🇪🇸</span><div><div class="native">Español</div><div class="en">Spanish</div></div></div>
-        <div class="lang-chip reveal d4"><span style="font-size:1.5rem;">🇵🇰</span><div><div class="native">اردو</div><div class="en">Urdu</div></div></div>
+      <div class="quote rise">
+        The gap between fine and a crisis is where most life happens.
       </div>
     </div>
   </section>
 
-  <!-- ===== CTA ===== -->
+  <section class="section-tight">
+    <div class="container prose">
+      <span class="eyebrow violet">Why Mentulis exists</span>
+      <p>
+        Therapy is the right answer for a lot of people. It is also expensive, waitlisted, and in
+        most of the world simply unavailable. Between the moment something starts weighing on you
+        and the moment you can talk to a professional, there is usually nothing.
+      </p>
+      <p>
+        Mentulis is built for that gap. Not as a replacement for care — as something to hold on
+        to while you wait for it, or while you decide whether you need it.
+      </p>
+      <p>
+        It works in nine languages because thinking about your own mind is hard enough in your
+        first language, let alone your second. That is a capability, not a demographic: Mentulis
+        is for anyone, anywhere, who would rather not do this in English.
+      </p>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container">
-      <div class="cta-band reveal">
-        <h2>Help us welcome the next arrival</h2>
-        <p>Partnerships, settlement agencies, therapists who want to be listed, or just kind words — we'd love to hear from you.</p>
-        <a class="btn btn-light" href="mailto:hello@mentulis.com">Write to us</a>
+      <span class="eyebrow">What we refuse to do</span>
+      <h2 style="max-width:640px;">Most of the design work was deciding what to leave out.</h2>
+      <p class="lead" style="max-width:660px;">
+        A mental health product has more ways to do harm than most software. These are the lines
+        we hold, and they cost us money.
+      </p>
+
+      <div class="refuse">
+        <div class="refuse-card rise">
+          <div class="tick" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <h3>We never paywall safety</h3>
+          <p>Crisis resources, breathing, grounding, journalling and your daily check-in are free and always will be. Premium buys depth and repetition. It never buys the thing you reach for on a bad night.</p>
+        </div>
+        <div class="refuse-card rise d1">
+          <div class="tick" style="background:var(--p-violet-bg);color:var(--p-violet-fg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <h3>We don't store your conversations</h3>
+          <p>Messages to the Companion are sent, answered and discarded. Not on your phone, not on our servers. There is no chat history — which also means there is none to leak, subpoena or sell.</p>
+        </div>
+        <div class="refuse-card rise d2">
+          <div class="tick" style="background:var(--p-cyan-bg);color:var(--p-cyan-fg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <h3>We don't gamify distress</h3>
+          <p>No streaks to break, no badges, no notifications engineered to pull you back. A day you skip is a day you skipped. Engagement is not the goal; it is not even a metric we would want to raise.</p>
+        </div>
+        <div class="refuse-card rise">
+          <div class="tick" style="background:var(--p-sky-bg);color:var(--p-sky-fg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <h3>We don't pretend to be clinicians</h3>
+          <p>The Companion says plainly that it is AI. Self-check scores are labelled as screening, never diagnosis. When something needs a professional, the app says so instead of trying to handle it.</p>
+        </div>
+        <div class="refuse-card rise d1">
+          <div class="tick" style="background:var(--p-indigo-bg);color:var(--p-indigo-fg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <h3>We don't sell data, and there's little to sell</h3>
+          <p>No ads, no advertising ID, no analytics SDK, no third-party sharing. Your check-ins and journal never leave your phone in the first place.</p>
+        </div>
+        <div class="refuse-card rise d2">
+          <div class="tick" style="background:var(--p-slate-bg);color:var(--p-slate-fg);" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <h3>We don't invent numbers</h3>
+          <p>The app shows what you actually recorded. No "your sleep is costing you 1.4 points" — we don't have that data, and fabricating insight in a mental health product is not a design flourish, it's a lie.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== Footer ===== -->
+  <section class="section-tight">
+    <div class="container prose">
+      <span class="eyebrow">The company</span>
+      <h2>Mentulis</h2>
+      <p>
+        Mentulis is a federally incorporated Canadian company, registered in August 2026 and based
+        in Ontario. The app launched on Google Play in 2026, with iOS to follow.
+      </p>
+      <p>
+        We are early, small, and deliberately so. The product is funded to be built properly
+        rather than grown quickly, because the failure modes of a rushed mental health app land
+        on people who are already struggling.
+      </p>
+      <p>
+        Revenue comes from Premium subscriptions. Not from advertising, not from data, and not
+        from selling insight about users to anyone — including employers who offer Mentulis to
+        their staff.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">What's next</span>
+      <h2 style="max-width:600px;">Where we are, and what comes after.</h2>
+      <p class="lead" style="max-width:640px;">
+        We would rather show you the real sequence than a polished promise. Dates move;
+        the order does not.
+      </p>
+
+      <ol class="timeline">
+        <li class="tl-item rise done">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="tl-body">
+            <span class="tl-tag">Done</span>
+            <h3>The app, built properly</h3>
+            <p>Nine languages including right-to-left, the Companion, CBT toolkit, mood and journal, breathing and grounding, and crisis resources that are free to everyone.</p>
+          </div>
+        </li>
+        <li class="tl-item rise d1 now">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="tl-body">
+            <span class="tl-tag">Now</span>
+            <h3>Closed testing on Google Play</h3>
+            <p>A small group of testers using the real app on real phones, so the first public version is one we have actually watched people use.</p>
+          </div>
+        </li>
+        <li class="tl-item rise d2">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="tl-body">
+            <span class="tl-tag">Next</span>
+            <h3>Public launch on Android</h3>
+            <p>Open availability on Google Play, with Premium subscriptions live.</p>
+          </div>
+        </li>
+        <li class="tl-item rise d3">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="tl-body">
+            <span class="tl-tag">After that</span>
+            <h3>iOS</h3>
+            <p>The same app on iPhone. Same features, same privacy posture, same free tier.</p>
+          </div>
+        </li>
+        <li class="tl-item rise d4">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="tl-body">
+            <span class="tl-tag">In progress</span>
+            <h3>Music &amp; sound</h3>
+            <p>Built and waiting. The feature is finished; it stays switched off until every track in it is properly licensed, because shipping audio we do not have clear rights to is not a corner we will cut.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow violet">Get in touch</span>
+      <h2 style="max-width:480px;">We read everything.</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin-top:28px;">
+        <div class="card lift rise">
+          <div class="ficon blue" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
+          </div>
+          <h3>General &amp; support</h3>
+          <p class="mute small">Questions, problems, or you cannot afford Premium.</p>
+          <p style="margin:0;"><a href="mailto:hello@mentulis.com">hello@mentulis.com</a></p>
+        </div>
+        <div class="card lift rise d1">
+          <div class="ficon violet" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3>Teams &amp; organisations</h3>
+          <p class="mute small">Offer Mentulis to your people without surveilling them.</p>
+          <p style="margin:0;"><a href="mailto:hello@mentulis.com?subject=Mentulis%20for%20teams">hello@mentulis.com</a></p>
+        </div>
+        <div class="card lift rise d2">
+          <div class="ficon cyan" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0V9h4"/><path d="M10 6h8M10 10h8M10 14h5"/></svg>
+          </div>
+          <h3>Press &amp; partnerships</h3>
+          <p class="mute small">Including NGOs and community organisations.</p>
+          <p style="margin:0;"><a href="mailto:hello@mentulis.com?subject=Press">hello@mentulis.com</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <footer class="footer">
     <div class="container">
-      <div class="footer-grid">
-        <div>
-          <div class="footer-logo"><img src="icon.png" alt="" />Mentulis</div>
-          <div class="footer-tagline">Speak. Feel. Heal.</div>
-          <p style="font-size: 0.9rem; max-width: 320px;">Mental wellness for everyone, in your language — with extra care for immigrants and newcomers to Canada. Not a substitute for professional diagnosis or treatment.</p>
-        </div>
-        <div>
-          <h4>Pages</h4>
-          <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="features.html">Features</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="privacy.html">Privacy Policy</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Contact & Crisis</h4>
-          <ul>
-            <li><a href="mailto:hello@mentulis.com">hello@mentulis.com</a></li>
-            <li><a href="mailto:privacy@mentulis.com">privacy@mentulis.com</a></li>
-            <li><a href="tel:988">Crisis line: call/text 9-8-8</a></li>
-            <li><a href="https://www.hopeforwellness.ca" rel="noopener" target="_blank">Hope for Wellness</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span>© <span class="year">2026</span> Mentulis. All rights reserved.</span>
-        <span>Made with care in Canada</span>
-      </div>
+      <ul class="footer-links">
+        <li><a href="features.html">Features</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+        <li><a href="terms.html">Terms</a></li>
+        <li><a href="delete-account.html">Delete account</a></li>
+        <li><a href="mailto:hello@mentulis.com">hello@mentulis.com</a></li>
+      </ul>
+      <p class="small" style="margin:0;">
+        Mentulis™ — Speak. Feel. Heal.<br />
+        Mentulis is a self-help tool. It is not medical care, not a diagnosis, and not an emergency service.
+      </p>
     </div>
   </footer>
 
-  <script src="js/main.js"></script>
+<script>
+(function () {
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var targets = document.querySelectorAll('.rise');
+  if (reduce || !('IntersectionObserver' in window)) {
+    targets.forEach(function (el) { el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    targets.forEach(function (el) { io.observe(el); });
+  }
+})();
+</script>
+
 </body>
 </html>

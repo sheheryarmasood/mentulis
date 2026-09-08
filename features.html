@@ -3,223 +3,385 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mentulis Features — AI Companion, CBT & Voice</title>
-  <meta name="description" content="Explore Mentulis: an AI wellness companion, voice support in 9 languages, mood tracking, CBT exercises, guided breathing, journaling and crisis resources." />
-  <link rel="icon" type="image/png" href="icon.png" />
+  <title>Features — Mentulis</title>
+  <meta name="description" content="An AI companion, CBT tools, mood tracking, breathing and crisis resources — in nine languages. What is free, what is Premium, and what Mentulis will not do." />
+  <link rel="icon" type="image/png" href="icon-v3.png" />
   <link rel="canonical" href="https://www.mentulis.com/features.html" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://www.mentulis.com/features.html" />
-  <meta property="og:title" content="Mentulis Features — AI Companion, CBT & Voice" />
-  <meta property="og:description" content="An AI wellness companion, mood tracking, CBT tools and voice support in 9 languages." />
-  <meta property="og:image" content="https://www.mentulis.com/icon.png" />
-  <meta property="og:site_name" content="Mentulis" />
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Mentulis Features — AI Companion, CBT & Voice" />
-  <meta name="twitter:description" content="An AI wellness companion, mood tracking, CBT tools and voice support in 9 languages." />
-  <meta name="twitter:image" content="https://www.mentulis.com/icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Jura:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+<style>
+  .page-hero { position: relative; padding: 64px 0 28px; overflow: hidden; }
+  .page-hero .orb-1 { width: 380px; height: 380px; top: -150px; right: -60px; }
+  .page-hero .container { position: relative; z-index: 1; }
+
+  .feat { display: grid; grid-template-columns: 1fr 1fr; gap: 52px; align-items: center; }
+  .feat.flip > div:first-child { order: 2; }
+  @media (max-width: 880px) {
+    .feat { grid-template-columns: 1fr; gap: 32px; }
+    .feat.flip > div:first-child { order: 0; }
+  }
+
+  .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 28px; }
+
+  .plan-wrap { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-panel); box-shadow: var(--shadow-sm); overflow: hidden; margin-top: 28px; }
+  .plan-table { width: 100%; border-collapse: collapse; }
+  .plan-table th, .plan-table td { text-align: left; padding: 16px 20px; border-top: 1px solid var(--line); font-size: .96rem; }
+  .plan-table thead th { border-top: 0; background: var(--chip); font-weight: 600; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--mute); }
+  .plan-table td:not(:first-child), .plan-table th:not(:first-child) { text-align: center; width: 130px; }
+  .yes { color: var(--accent); font-weight: 700; }
+  .no  { color: var(--mute); }
+
+  .price-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-top: 24px; }
+  .price { border: 1px solid var(--line); border-radius: var(--r-card); padding: 22px; background: var(--card); box-shadow: var(--shadow-sm); }
+  .price b { display: block; font-size: 1.7rem; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; margin-bottom: 2px; }
+  .price.best { border-color: transparent; background: var(--grad); color: #fff; box-shadow: var(--shadow); }
+  .price.best .mute { color: rgba(255,255,255,.85); }
+
+  .chat-demo { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-panel); padding: 26px; box-shadow: var(--shadow); }
+  .bub { border-radius: 18px; padding: 13px 16px; font-size: .94rem; line-height: 1.5; margin-bottom: 10px; max-width: 90%; }
+  .bub-them { background: var(--chip); color: var(--ink); }
+  .bub-me { background: var(--grad); color: #fff; margin-left: auto; }
+
+  .bars { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-panel); padding: 26px; box-shadow: var(--shadow); }
+
+  /* --- Coming-soon block. Visually distinct from shipped features so nobody
+         reads it as something already in the app. ---------------------------- */
+  .soon-panel {
+    background: var(--grad-soft); border-radius: var(--r-panel); padding: 44px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
+  }
+  .soon-tag {
+    display: inline-flex; align-items: center; gap: 7px; font-size: .74rem; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--p-violet-fg);
+    background: var(--card); padding: 7px 14px; border-radius: var(--r-chip); margin-bottom: 14px;
+  }
+  .soon-tag::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--violet); }
+  .wave { display: flex; align-items: flex-end; gap: 6px; height: 96px; }
+  .wave i { flex: 1; background: var(--grad); border-radius: 999px; display: block; opacity: .85; }
+  .sound-card { background: var(--card); border-radius: var(--r-panel); padding: 30px; box-shadow: var(--shadow); }
+  @media (max-width: 880px) { .soon-panel { grid-template-columns: 1fr; gap: 32px; padding: 28px; } }
+</style>
 </head>
 <body>
 
   <header class="nav">
     <div class="container nav-inner">
-      <a class="nav-logo" href="index.html"><img src="icon.png" alt="Mentulis logo" />Mentulis</a>
+      <a class="nav-logo" href="index.html"><img src="icon-v3.png" alt="" width="32" height="32" />Mentulis</a>
       <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="features.html" class="active">Features</a></li>
+        <li><a href="features.html">Features</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="privacy.html">Privacy</a></li>
       </ul>
-      <a class="btn btn-primary nav-cta" href="index.html#get">Get the app</a>
-      <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
+      <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.mentulis.mentulis">Get the app</a>
     </div>
   </header>
 
-  <!-- ===== Page hero ===== -->
   <section class="page-hero">
-    <div class="container" style="max-width: 760px; text-align: center;">
+    <div class="orb orb-violet orb-1 drift" aria-hidden="true"></div>
+    <div class="container">
       <span class="eyebrow">Features</span>
-      <h1>Gentle tools for heavy days</h1>
-      <p class="lead" style="margin-top: 18px;">Every feature in Mentulis exists to answer one question: <em>what would actually help someone at 2am, in their own language?</em></p>
+      <h1 style="max-width:700px;">Tools for heavy days, <span class="grad-text">and for ordinary ones.</span></h1>
+      <p class="lead" style="max-width:620px;">
+        Six things, in nine languages. Most of them free, permanently — including every
+        part you would reach for on a bad night.
+      </p>
     </div>
   </section>
 
-  <!-- ===== 1. AI Companion ===== -->
-  <section class="feature-row">
-    <div class="container split">
-      <div class="split-text reveal">
-        <span class="eyebrow">AI Companion</span>
+  <section class="section-tight">
+    <div class="container feat">
+      <div>
+        <span class="eyebrow">01 — Companion</span>
         <h2>Someone to talk to, any hour</h2>
-        <p>The Mentulis companion is a warm, judgement-free listener powered by state-of-the-art AI — and it understands what weighs on you, from everyday stress and anxiety to homesickness, culture shock, and family pressure from two continents at once.</p>
-        <ul class="checklist">
-          <li>Replies in your chosen language — all 9, fluently</li>
-          <li>Listens first, validates, then gently suggests coping tools</li>
-          <li>Clear boundaries: it never diagnoses, and always points to professional help and crisis lines when things are serious</li>
-        </ul>
+        <p>
+          An AI companion that listens and replies in your language. It is trained on
+          evidence-based approaches, and it is clear about what it is: not a therapist,
+          not supervised by one, and capable of being wrong.
+        </p>
+        <p>Ten messages a day are free. Premium removes the limit.</p>
+        <p class="mute small">
+          Conversations are never stored. Each message is sent, answered and discarded —
+          there is no history on your phone or on our servers.
+        </p>
       </div>
-      <div class="reveal d1">
-        <div class="chat-mock">
-          <div class="bubble user">I got the job… but I cried after the call. I don't know why. My family back home is so proud and I just feel empty.</div>
-          <div class="bubble ai">That sounds really confusing — joy and grief arriving at the same time. It makes sense: every win here can remind you of who isn't here to share it. Would it help to talk through what the empty feeling is saying?</div>
-          <div class="bubble ai typing"><i></i><i></i><i></i></div>
+      <div class="chat-demo rise">
+        <div class="bub bub-them">I keep waking up at three and my head just starts going.</div>
+        <div class="bub bub-me">That sounds exhausting. Three in the morning is a hard hour to think clearly in.</div>
+        <p class="mute small" style="margin:6px 0 0;">Illustrative. Not a real conversation.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container feat flip">
+      <div class="bars rise">
+        <p class="small mute" style="margin:0 0 14px;">Last 7 days</p>
+        <div style="display:flex;align-items:flex-end;gap:8px;height:120px;">
+          <div style="flex:1;height:44%;background:var(--chip);border-radius:8px;"></div>
+          <div style="flex:1;height:60%;background:var(--chip);border-radius:8px;"></div>
+          <div style="flex:1;height:34%;background:var(--chip);border-radius:8px;"></div>
+          <div style="flex:1;height:70%;background:var(--chip);border-radius:8px;"></div>
+          <div style="flex:1;height:56%;background:var(--chip);border-radius:8px;"></div>
+          <div style="flex:1;height:78%;background:var(--chip);border-radius:8px;"></div>
+          <div style="flex:1;height:88%;background:var(--grad);border-radius:8px;"></div>
         </div>
+        <p class="small mute" style="margin:16px 0 0;">Averages, not diagnoses.</p>
+      </div>
+      <div>
+        <span class="eyebrow violet">02 — Mood &amp; journal</span>
+        <h2>One tap a day. A clearer picture over time.</h2>
+        <p>
+          A check-in that takes ten seconds, and a journal for everything that does not
+          fit into five buttons. Over weeks it becomes a line you can actually read.
+        </p>
+        <p>Free shows your last seven check-ins. Premium opens the full history.</p>
+        <p class="mute small">
+          There is no streak to break and no score to optimise. A day you skip is just a
+          day you skipped.
+        </p>
       </div>
     </div>
   </section>
 
-  <!-- ===== 2. Voice ===== -->
-  <section class="feature-row" style="background: var(--white);">
-    <div class="container split reverse">
-      <div class="split-text reveal">
-        <span class="eyebrow">Voice</span>
-        <h2>Speak it. Hear it. In your language.</h2>
-        <p>Typing about feelings in a second language is hard. With Mentulis you can simply talk — the app turns your voice into text — and have every reply read aloud to you, naturally.</p>
-        <ul class="checklist">
-          <li>Speech-to-text for hands-free, heart-first conversations</li>
-          <li>Text-to-speech that reads replies in your language</li>
-          <li>Works across English, French, Punjabi, Hindi, Mandarin, Tagalog, Arabic, Spanish and Urdu</li>
-        </ul>
-      </div>
-      <div class="reveal d1">
-        <div class="chart-mock" style="text-align: center;">
-          <div class="equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-          <p style="margin-top: 22px; color: var(--muted); font-size: 0.95rem;">"ਅੱਜ ਮੈਂ ਥੋੜ੍ਹਾ ਉਦਾਸ ਹਾਂ…"<br /><span style="font-size: 0.82rem;">Speaking Punjabi → understood instantly</span></p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== 3. Mood tracking ===== -->
-  <section class="feature-row">
-    <div class="container split">
-      <div class="split-text reveal">
-        <span class="eyebrow">Mood tracking</span>
-        <h2>One tap a day. A clearer picture every week.</h2>
-        <p>Five emojis, one honest tap. Over days and weeks, Mentulis turns those taps into a picture of your emotional weather — so you can see what helps, what hurts, and when to reach out.</p>
-        <ul class="checklist">
-          <li>7-day mood chart with gentle insights</li>
-          <li>Export a clean PDF summary to share with a therapist or doctor</li>
-          <li>All of it stored on your phone, never on our servers</li>
-        </ul>
-      </div>
-      <div class="reveal d1">
-        <div class="chart-mock">
-          <p style="font-family: var(--font-display); font-weight: 600; margin-bottom: 18px;">Your week</p>
-          <svg viewBox="0 0 400 180" width="100%" aria-hidden="true">
-            <polyline class="chart-line" points="20,140 75,120 130,135 185,80 240,95 295,50 350,38" fill="none" stroke="#3D5A99" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-            <g fill="#3D5A99">
-              <circle cx="20" cy="140" r="6" /><circle cx="75" cy="120" r="6" /><circle cx="130" cy="135" r="6" /><circle cx="185" cy="80" r="6" /><circle cx="240" cy="95" r="6" /><circle cx="295" cy="50" r="6" /><circle cx="350" cy="38" r="6" />
-            </g>
-            <g font-size="13" fill="#A8C8E0" text-anchor="middle" font-family="Inter, sans-serif">
-              <text x="20" y="170">M</text><text x="75" y="170">T</text><text x="130" y="170">W</text><text x="185" y="170">T</text><text x="240" y="170">F</text><text x="295" y="170">S</text><text x="350" y="170">S</text>
-            </g>
-          </svg>
-          <p style="color: var(--muted); font-size: 0.9rem; margin-top: 12px;">😐 Mid-week dip → 😄 weekend recovery</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== 4. CBT toolkit ===== -->
-  <section class="feature-row" style="background: var(--white);">
-    <div class="container">
-      <div class="section-head center reveal">
-        <span class="eyebrow">CBT toolkit</span>
-        <h2>Techniques therapists actually use</h2>
-        <p>Cognitive Behavioural Therapy is one of the best-studied approaches in mental health. Mentulis brings its core exercises to your pocket — structured, gentle, and free to start.</p>
-      </div>
-      <div class="grid-3">
-        <div class="card reveal"><h3>Thought Record</h3><p>Catch a heavy thought, examine the evidence, and reframe it — the classic 7-step CBT exercise, one prompt at a time.</p></div>
-        <div class="card reveal d1"><h3>Self-checks (GAD-7 & PHQ-9)</h3><p>The same anxiety and mood questionnaires used in clinics, with plain-language results you can track over time.</p></div>
-        <div class="card reveal d2"><h3>Worry Journal</h3><p>Park your worries on paper, label what you can control, and schedule the rest for "worry time" instead of 3am.</p></div>
-        <div class="card reveal"><h3>Gratitude Log</h3><p>Three small good things a day — a tiny habit with an outsized, well-researched effect on mood.</p></div>
-        <div class="card reveal d1"><h3>Free Journal</h3><p>Blank pages with thoughtful prompts when you need a nudge: "What do you miss most this week?"</p></div>
-        <div class="card reveal d2"><h3>Share with your therapist</h3><p>Turn your check-ins and exercises into a clean, professional PDF — bridging self-help and real care.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== 5. Breathing ===== -->
-  <section class="breath-band" style="background-image: url('img/nature-lake.jpg');">
-    <div class="container">
-      <h2 class="reveal">Guided breathing, beautifully simple</h2>
-      <p class="reveal d1">Box 4-4-4-4 for focus. 4-7-8 for sleep. Calm for everything in between. Follow the circle — it's doing the counting for you.</p>
-      <div class="breath-circle-wrap reveal d2">
-        <div class="breath-circle"></div>
-        <div class="breath-label">Breathe in…</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== 6. Therapists & crisis ===== -->
-  <section class="feature-row">
-    <div class="container split">
-      <div class="split-media reveal">
-        <img src="img/community-table.jpg" alt="A diverse group of people sharing a meal together" loading="lazy" />
-        <div class="badge">Real help, in your language</div>
-      </div>
-      <div class="split-text reveal d1">
-        <span class="eyebrow">Beyond the app</span>
-        <h2>A bridge to human support</h2>
-        <p>Self-help has limits — and Mentulis is honest about them. When you're ready, the app helps you take the next step.</p>
-        <ul class="checklist">
-          <li>Therapist directory filterable by language spoken</li>
-          <li>One-tap access to Canadian crisis lines: 9-8-8, Kids Help Phone, Hope for Wellness, 2-1-1</li>
-          <li>Crisis guidance built into every AI conversation, automatically</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== CTA ===== -->
   <section class="section">
     <div class="container">
-      <div class="cta-band reveal">
-        <h2>Free to start. Premium when you're ready.</h2>
-        <p>Mood tracking, journaling, breathing and 10 AI conversations a day — free, forever. Premium unlocks unlimited conversations and the full library.</p>
-        <a class="btn btn-light" href="index.html#get">Coming soon to Google Play</a>
+      <span class="eyebrow">03 — CBT toolkit</span>
+      <h2 style="max-width:560px;">Techniques therapists actually use</h2>
+      <div class="grid-cards">
+        <div class="card lift rise">
+          <div class="ficon violet" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15h6M9 11h3"/></svg>
+          </div>
+          <h3>Thought records</h3>
+          <p class="mute small" style="margin:0;">Catch a thought, test it, and write what you would tell a friend in the same position.</p>
+        </div>
+        <div class="card lift rise d1">
+          <div class="ficon blue" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <h3>Worry journal</h3>
+          <p class="mute small" style="margin:0;">Separate what you can act on from what you are only carrying.</p>
+        </div>
+        <div class="card lift rise d2">
+          <div class="ficon cyan" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <h3>Self-checks</h3>
+          <p class="mute small" style="margin:0;">GAD-7 and PHQ-9 — the same screening questionnaires used in clinics. Your first is free.</p>
+        </div>
+        <div class="card lift rise d3">
+          <div class="ficon sky" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.35-9.33-8.5A5.5 5.5 0 0 1 12 6.5a5.5 5.5 0 0 1 9.33 6C19 16.65 12 21 12 21z"/></svg>
+          </div>
+          <h3>Gratitude log</h3>
+          <p class="mute small" style="margin:0;">Three lines, no pressure to feel anything in particular. Always free.</p>
+        </div>
+      </div>
+      <div class="card" style="margin-top:22px;border-color:var(--accent);border-width:1.5px;">
+        <p style="margin:0;">
+          <strong>A score is not a diagnosis.</strong> GAD-7 and PHQ-9 are screening tools.
+          They can tell you something is worth looking at. Only a qualified clinician can
+          tell you what it is.
+        </p>
       </div>
     </div>
   </section>
 
-  <!-- ===== Footer ===== -->
+  <section class="section-tight">
+    <div class="container feat">
+      <div>
+        <span class="eyebrow">04 — Breathing &amp; grounding</span>
+        <h2>For when typing is too much</h2>
+        <p>
+          Paced breathing, including the 4-7-8 pattern, and a 5-4-3-2-1 sensory exercise
+          that asks you to look around rather than write anything.
+        </p>
+        <p class="mute small">
+          Grounding saves nothing and asks for nothing. It stays usable when you are too
+          overwhelmed to type — which is the point.
+        </p>
+        <p><a href="index.html#breathe">Try the breathing exercise on the homepage &rarr;</a></p>
+      </div>
+      <div>
+        <span class="eyebrow violet">05 — Share with a therapist</span>
+        <h2>A PDF, only when you ask</h2>
+        <p>
+          Mentulis can produce a summary of your check-ins and self-check scores as a PDF —
+          something concrete to bring to an appointment instead of trying to remember six
+          weeks at once.
+        </p>
+        <p class="mute small">
+          You start it, you choose where it goes. It is the only thing in the app that
+          sends your wellness data anywhere. Premium feature.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MUSIC & SOUND — built, not yet switched on ==========
+       Marked "coming soon" deliberately. The feature is complete in the app but
+       ships with an empty catalogue until every track is licensed, so listing it
+       as available would promise something an installed copy does not have. -->
+  <section class="section-tight">
+    <div class="container">
+      <div class="soon-panel rise">
+        <div>
+          <span class="soon-tag">Coming soon</span>
+          <h2>Music &amp; sound</h2>
+          <p>
+            A small library of calming sound — rain, waves, wind, quiet room tone — with a
+            sleep timer and seamless looping, so a short recording can run as long as you need
+            it to. Built into the app and finished.
+          </p>
+          <p class="mute small" style="margin-bottom:0;">
+            It stays switched off until every track in it is properly licensed for use in a paid
+            app. Shipping audio we do not have clear rights to is not a corner we are willing to
+            cut, so this arrives when the licensing is right — not before.
+          </p>
+        </div>
+        <div class="sound-card">
+          <p class="small mute" style="margin:0 0 16px;">Sleep timer &nbsp;·&nbsp; 30 min</p>
+          <div class="wave" aria-hidden="true">
+            <i style="height:34%"></i><i style="height:58%"></i><i style="height:44%"></i>
+            <i style="height:76%"></i><i style="height:52%"></i><i style="height:88%"></i>
+            <i style="height:40%"></i><i style="height:66%"></i><i style="height:30%"></i>
+            <i style="height:58%"></i><i style="height:46%"></i><i style="height:72%"></i>
+          </div>
+          <p class="small mute" style="margin:16px 0 0;">Loops seamlessly. Stops when you do.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="crisis-band">
+        <h2>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6z"/>
+          </svg>
+          06 — Crisis resources
+        </h2>
+        <p style="margin-bottom:10px;">
+          One tap from every screen in the app. Never behind a subscription, never behind a
+          sign-in, never behind an onboarding flow.
+        </p>
+        <p class="small" style="margin:0;">
+          The lines in the app are for <strong>Canada and the United States</strong> —
+          911, 988, Kids Help Phone, Hope for Wellness and 211. Elsewhere,
+          <a href="https://findahelpline.com" target="_blank" rel="noopener">findahelpline.com</a>
+          lists free, confidential helplines by country.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Nine languages</span>
+      <h2 style="max-width:620px;">Including the two that read right to left.</h2>
+      <p class="lead" style="max-width:620px;">
+        The whole layout mirrors for Arabic and Urdu — navigation, chevrons, chat bubbles,
+        the lot. Not English with translated labels.
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;" class="rise">
+        <span class="chip">English</span><span class="chip">Français</span>
+        <span class="chip">Español</span><span class="chip">中文</span>
+        <span class="chip">हिन्दी</span><span class="chip">ਪੰਜਾਬੀ</span>
+        <span class="chip">Tagalog</span><span class="chip">العربية</span>
+        <span class="chip">اردو</span>
+      </div>
+      <p class="mute small" style="margin-top:18px;max-width:640px;">
+        The GAD-7 and PHQ-9 questionnaires stay in English. They are clinical instruments
+        whose wording is validated in translation by researchers, not by us — so we would
+        rather show them in English than show you a version we cannot vouch for.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow violet">Pricing</span>
+      <h2>Free to start. <span class="grad-text">Premium when you're ready.</span></h2>
+      <p class="lead" style="max-width:620px;">
+        Everything you would reach for on a bad night is free, permanently.
+        Premium buys depth and repetition, not safety.
+      </p>
+
+      <div class="plan-wrap">
+        <table class="plan-table">
+          <thead>
+            <tr><th>&nbsp;</th><th>Free</th><th>Premium</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>AI companion messages</td><td>10 a day</td><td class="yes">Unlimited</td></tr>
+            <tr><td>All 9 languages, with voice</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td>Daily mood check-in</td><td>7-day history</td><td class="yes">Full history</td></tr>
+            <tr><td>Breathing, journal &amp; gratitude</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td>CBT self-checks (GAD-7, PHQ-9)</td><td>First one</td><td class="yes">Unlimited + tracking</td></tr>
+            <tr><td>Thought records &amp; worry journal</td><td class="no">—</td><td class="yes">✓</td></tr>
+            <tr><td>Therapist-ready PDF reports</td><td class="no">—</td><td class="yes">✓</td></tr>
+            <tr><td>Crisis resources</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="price-row">
+        <div class="price"><b>$14.99</b><span class="mute small">per month</span></div>
+        <div class="price"><b>$34.99</b><span class="mute small">every 3 months</span></div>
+        <div class="price best"><b>$89.99</b><span class="mute small">per year — best value</span></div>
+      </div>
+      <p class="mute small" style="margin-top:16px;">
+        Prices in US dollars and may vary by region and tax. Subscriptions renew automatically;
+        cancel any time in your app store. No countdowns, no fake discounts.
+      </p>
+      <div class="card" style="margin-top:20px;">
+        <p style="margin:0;">
+          <strong>If you cannot afford Premium, email us.</strong>
+          No one is turned away from Mentulis for lack of funds —
+          <a href="mailto:hello@mentulis.com">hello@mentulis.com</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
   <footer class="footer">
     <div class="container">
-      <div class="footer-grid">
-        <div>
-          <div class="footer-logo"><img src="icon.png" alt="" />Mentulis</div>
-          <div class="footer-tagline">Speak. Feel. Heal.</div>
-          <p style="font-size: 0.9rem; max-width: 320px;">Mental wellness for everyone, in your language — with extra care for immigrants and newcomers to Canada. Not a substitute for professional diagnosis or treatment.</p>
-        </div>
-        <div>
-          <h4>Pages</h4>
-          <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="features.html">Features</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="privacy.html">Privacy Policy</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Contact & Crisis</h4>
-          <ul>
-            <li><a href="mailto:hello@mentulis.com">hello@mentulis.com</a></li>
-            <li><a href="mailto:privacy@mentulis.com">privacy@mentulis.com</a></li>
-            <li><a href="tel:988">Crisis line: call/text 9-8-8</a></li>
-            <li><a href="https://www.hopeforwellness.ca" rel="noopener" target="_blank">Hope for Wellness</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span>© <span class="year">2026</span> Mentulis. All rights reserved.</span>
-        <span>Made with care in Canada</span>
-      </div>
+      <ul class="footer-links">
+        <li><a href="features.html">Features</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+        <li><a href="terms.html">Terms</a></li>
+        <li><a href="delete-account.html">Delete account</a></li>
+        <li><a href="mailto:hello@mentulis.com">hello@mentulis.com</a></li>
+      </ul>
+      <p class="small" style="margin:0;">
+        Mentulis™ — Speak. Feel. Heal.<br />
+        Mentulis is a self-help tool. It is not medical care, not a diagnosis, and not an emergency service.
+      </p>
     </div>
   </footer>
 
-  <script src="js/main.js"></script>
+<script>
+(function () {
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var targets = document.querySelectorAll('.rise');
+  if (reduce || !('IntersectionObserver' in window)) {
+    targets.forEach(function (el) { el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    targets.forEach(function (el) { io.observe(el); });
+  }
+})();
+</script>
+
 </body>
 </html>
