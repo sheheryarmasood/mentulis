@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://www.mentulis.com/sitemap.xml
+Sitemap: https://mentulis.com/sitemap.xml
